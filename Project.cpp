@@ -21,6 +21,7 @@
 #include<vector>
 
 #include "Project.h"
+#include "Reader.h"
 
 // to use this example you will need to download the header files for GLM put them into a folder which you will reference in
 // properties -> VC++ Directories -> libraries
@@ -34,6 +35,8 @@ GLuint  Buffers[NumBuffers];
 GLuint texture1;
 
 const GLuint  NumVertices = 36;
+
+Reader reader;
 
 //----------------------------------------------------------------------------
 //
@@ -109,6 +112,7 @@ init(void)
 	
 	};
 
+	
 
 
 	glGenBuffers(NumBuffers, Buffers);
@@ -152,7 +156,7 @@ init(void)
 	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -2.0f));
 
 	// creating the projection matrix
-	glm::mat4 projection = glm::perspective(45.0f, 4.0f / 3, 0.1f, 20.0f);
+	glm::mat4 projection = glm::perspective(90.0f, 4.0f / 3, 0.1f, 20.0f);
 
 	// Adding all matrices up to create combined matrix
 	glm::mat4 mvp = projection * view * model;
@@ -165,6 +169,9 @@ init(void)
 	glEnableVertexAttribArray(vPosition);
 	glEnableVertexAttribArray(cPosition); 
 	glEnableVertexAttribArray(tPosition);
+
+	reader.ReadFile("testFile.geojson");
+	//reader.PrintDataByID(0);
 }
 
 void loadTexture(GLuint &texture, std::string texturepath)
@@ -229,8 +236,7 @@ display(void)
 //
 
 
-int
-main(int argc, char** argv)
+int notmain()
 {
 	glfwInit();
 
@@ -254,4 +260,6 @@ main(int argc, char** argv)
 	glfwDestroyWindow(window);
 
 	glfwTerminate();
+
+	return 0;
 }
