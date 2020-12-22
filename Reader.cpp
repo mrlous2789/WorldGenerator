@@ -20,7 +20,7 @@ bool Reader::ReadFile(std::string filename)
 		int id = 0, height = 0, biome = 0, population = 0, state = 0, province = 0, culture = 0, religion = 0;
 		std::string type;
 		std::vector<int> neighbors;//temp neighbors vector
-		std::vector<glm::vec2> coords;//temp coords vectore
+		std::vector<glm::vec3> coords;//temp coords vectore
 
 		while (std::getline(file, line))
 		{
@@ -28,7 +28,7 @@ bool Reader::ReadFile(std::string filename)
 			{
 				int start = line.find_first_of('[');//find the start of the coordinates
 				std::string coord = "";
-				float x = 0.0f, y = 0.0f;
+				float x = 0.0f, y = 0.0f, z = 0.0f;
 				bool xcoord = true;
 				for (int i = start; i < line.size(); i++)
 				{
@@ -47,7 +47,23 @@ bool Reader::ReadFile(std::string filename)
 						else//if its the y coord then we already have the x coord so save onto temp coords vector
 						{
 							y = ConvertToDouble(coord);
-							coords.push_back({ x,y });
+							if (x < lowestX)
+							{
+								lowestX = x;
+							}
+							else if (x > highestX)
+							{
+								highestX = x;
+							}
+							if (y < lowestY)
+							{
+								lowestY = y;
+							}
+							else if (y > highestY)
+							{
+								highestY = y;
+							}
+							coords.push_back({ x,y,z });
 							xcoord = true;
 							coord = "";
 						}
@@ -98,6 +114,10 @@ bool Reader::ReadFile(std::string filename)
 
 		}
 		std::cout << "Done" << std::endl;
+		std::cout << "Highest X: " << highestX << std::endl;
+		std::cout << "Lowest X: " << lowestX << std::endl;
+		std::cout << "Highest Y: " << highestY << std::endl;
+		std::cout << "Lowest Y: " << lowestY << std::endl;
 
 		file.close();
 		return true;

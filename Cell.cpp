@@ -4,7 +4,7 @@ Cell::Cell()
 {
 
 }
-Cell::Cell(std::vector<glm::vec2> inCoords, int inId, int inHeight, int inBiome, std::string inType, int inPopulation, int inState, int inProvince, int inCulture, int inReligion, std::vector<int> inNeighbors)
+Cell::Cell(std::vector<glm::vec3> inCoords, int inId, int inHeight, int inBiome, std::string inType, int inPopulation, int inState, int inProvince, int inCulture, int inReligion, std::vector<int> inNeighbors)
 {
 	coords = inCoords;
 	id = inId;
@@ -43,4 +43,13 @@ void Cell::PrintProperties()
 		std::cout << neighbors[i] << ", ";
 	}
 	std::cout << std::endl;
+}
+
+void Cell::NormaliseCoords()
+{
+	for (int i = 0; i < coords.size(); i++)
+	{
+		coords[i].x = coords[i].x / 30.0f;
+		coords[i].y = coords[i].y / 30.0f;
+	}
 }

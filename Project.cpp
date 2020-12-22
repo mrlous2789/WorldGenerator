@@ -170,7 +170,7 @@ init(void)
 	glEnableVertexAttribArray(cPosition); 
 	glEnableVertexAttribArray(tPosition);
 
-	reader.ReadFile("testFile.geojson");
+	//reader.ReadFile("testFile.geojson");
 	//reader.PrintDataByID(0);
 }
 
@@ -226,6 +226,7 @@ display(void)
 	glBindVertexArray(VAOs[Triangles]);
 	glBindTexture(GL_TEXTURE_2D, texture1);
 	glDrawElements(GL_TRIANGLES, NumVertices, GL_UNSIGNED_INT, 0);
+	
 
 	
 }

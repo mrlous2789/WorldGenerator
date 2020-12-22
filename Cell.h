@@ -8,10 +8,10 @@ class Cell
 {
 public:
 	Cell();
-	Cell(std::vector<glm::vec2> inCoords, int inId, int inHeight, int inBiome, std::string inType, int inPopulation, int inState, int inProvince, int inCulture, int inReligion, std::vector<int> inNeighbors);
+	Cell(std::vector<glm::vec3> inCoords, int inId, int inHeight, int inBiome, std::string inType, int inPopulation, int inState, int inProvince, int inCulture, int inReligion, std::vector<int> inNeighbors);
 	void PrintProperties();
 
-	std::vector<glm::vec2> coords;//coords of the cells vertices
+	std::vector<glm::vec3> coords;//coords of the cells vertices
 	int id = -1;//cell id
 	int height = 0;//hieght of cell
 	int biome = 0;//biome id
@@ -22,6 +22,8 @@ public:
 	int culture = 0;//cell culture
 	int religion = 0;//cell religion
 	std::vector<int> neighbors;//neighboring cell ids
+
+	void NormaliseCoords();
 private:
 
 };

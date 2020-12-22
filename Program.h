@@ -29,13 +29,19 @@ namespace Mer
 
 		Reader reader;
 
-		enum VAO_IDs { Triangles, Indices, Colours, Tex, NumVAOs = 1 };
+		enum VAO_IDs { Cells, Indices, Colours, Tex, NumVAOs = 1 };
 		enum Buffer_IDs { ArrayBuffer, NumBuffers = 4 };
 		enum Attrib_IDs { vPosition = 0, cPosition = 1, tPosition = 2 };
 
 		GLuint VAOs[NumVAOs];
 		GLuint Buffers[NumBuffers];
 		GLuint texture1;
+
+		GLuint program;
+
+		int activeCell = 0;
+
+
 
 #define BUFFER_OFFSET(a) ((void*)(a))
 

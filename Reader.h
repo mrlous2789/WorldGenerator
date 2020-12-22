@@ -27,5 +27,9 @@ private:
 	int ConvertToInt(std::string property);
 	float ConvertToDouble(std::string property);
 
+	float highestX = 0.0f;
+	float lowestX = 0.0f;
+	float highestY = -10.0f;
+	float lowestY = 0.0f;
 
 };
