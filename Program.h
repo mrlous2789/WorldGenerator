@@ -29,18 +29,24 @@ namespace Mer
 
 		Reader reader;
 
-		enum VAO_IDs { Cells, Indices, Colours, Tex, NumVAOs = 1 };
-		enum Buffer_IDs { ArrayBuffer, NumBuffers = 4 };
+
+
+		enum VAO_IDs { Cell1, Cell2, Colours, Tex, NumVAOs = 6000 };
+		enum Buffer_IDs { ArrayBuffer, NumBuffers = 6000 };
 		enum Attrib_IDs { vPosition = 0, cPosition = 1, tPosition = 2 };
 
 		GLuint VAOs[NumVAOs];
 		GLuint Buffers[NumBuffers];
 		GLuint texture1;
 
+
+		//std::vector<GLuint> VAOs;
+		//std::vector<GLuint> Buffers;
+
 		GLuint program;
 
 		int activeCell = 0;
-
+		int cellCount = 5000;
 
 
 #define BUFFER_OFFSET(a) ((void*)(a))

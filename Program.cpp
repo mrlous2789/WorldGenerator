@@ -26,14 +26,25 @@ namespace Mer
 				return false;
 			}
 
-			reader.cells[activeCell].NormaliseCoords();
-			reader.PrintDataByID(activeCell);
+			cellCount = reader.cells.size();
 
 
+			for (int i = 0; i < cellCount; i++)
+			{
+				reader.cells[i].NormaliseCoords();
+			}
 
+			//for (int i = 0; i < reader.cells.size() / 2; i++)
+			//{
+			//	reader.cells[i].NormaliseCoords();
+			//}
+			//reader.cells[1].NormaliseCoords();
+			//reader.PrintDataByID(activeCell);
+			
 
-			glGenVertexArrays(NumVAOs, VAOs);
-			glBindVertexArray(VAOs[Cells]);
+			glGenVertexArrays(cellCount, VAOs);
+			glGenBuffers(cellCount, Buffers);
+			
 
 
 			glUseProgram(program);
@@ -46,18 +57,53 @@ namespace Mer
 			   0.2484f,-0.2338f, 0.0f,
 			   0.2196,-0.2232f, 0.0f
 			};
+			static const GLfloat g_vertex_buffer_data_second[] = {
+			   0.00036f, -0.2772f, 0.0f,
+			   -0.018f, -0.2628f, 0.0f,
+			   0.0f, -0.2376f, 0.0f,
+			   0.0792f, -0.1872f, 0.0f,
+			   0.1332f,-0.1944f, 0.0f,
+			   0.0936f,-0.2916f, 0.0f,
+			   0.0648f,-0.2988f,0.0f,
+			   0.0036f,-0.2772f,0.0f
+			};
 
 			glLineWidth(1.0f);
 
-			glGenBuffers(NumBuffers, Buffers);
+
+
+			for (int i = 0; i < cellCount; i++)
+			{
+				glBindVertexArray(i);
+				glBindBuffer(GL_ARRAY_BUFFER, Buffers[i]);
+				glBufferData(GL_ARRAY_BUFFER, reader.cells[i].coords.size() * sizeof(glm::vec3), &reader.cells[i].coords.front(), GL_STATIC_DRAW);
+				glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+			}
+
+			//glBindVertexArray(VAOs[Cell1]);
+
+			//glBindBuffer(GL_ARRAY_BUFFER, Buffers[Cell1]);
+			//glBufferData(GL_ARRAY_BUFFER, reader.cells[activeCell].coords.size() * sizeof(glm::vec3), &reader.cells[activeCell].coords.front(), GL_STATIC_DRAW);
+			//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+			//glBindVertexArray(VAOs[Cell2]);
+
+			//glBindBuffer(GL_ARRAY_BUFFER, Buffers[Cell2]);
+			//glBufferData(GL_ARRAY_BUFFER, reader.cells[activeCell + 1].coords.size() * sizeof(glm::vec3), &reader.cells[activeCell + 1].coords.front(), GL_STATIC_DRAW);
+			//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+			//glBindVertexArray(VAOs[Cell1]);
+
+			//glBindBuffer(GL_ARRAY_BUFFER, Buffers[Cell1]);
+			//glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), &g_vertex_buffer_data[0], GL_STATIC_DRAW);
+			//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+			//glBindVertexArray(VAOs[Cell2]);
+
+			//glBindBuffer(GL_ARRAY_BUFFER, Buffers[Cell2]);
+			//glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data_second), &g_vertex_buffer_data_second[0], GL_STATIC_DRAW);
+			//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
 			
-
-			glBindBuffer(GL_ARRAY_BUFFER, Buffers[Cells]);
-			glBufferData(GL_ARRAY_BUFFER, reader.cells[activeCell].coords.size() * sizeof(glm::vec3), &reader.cells[activeCell].coords.front(), GL_STATIC_DRAW);
-			//glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), &g_vertex_buffer_data, GL_STATIC_DRAW);
-			
-			//glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
 
 			// creating the model matrix
 			glm::mat4 model = glm::mat4(1.0f);
@@ -101,7 +147,7 @@ namespace Mer
 	{
 		glfwInit();
 
-		window = glfwCreateWindow(800, 600, "Project", NULL, NULL);
+		window = glfwCreateWindow(1920, 1080, "Project", NULL, NULL);
 		glfwMakeContextCurrent(window);
 		glewInit();
 
@@ -117,12 +163,38 @@ namespace Mer
 
 		glUseProgram(program);
 
-		glEnableVertexAttribArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, Buffers[Cells]);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-		glDrawArrays(GL_TRIANGLE_FAN, 0, reader.cells[activeCell].coords.size() * 10);
-		glDisableVertexAttribArray(0);
-		//glBindVertexArray(VAOs[Cells]);
-		//glDrawElements(GL_LINE_LOOP, reader.cells[0].coords.size(), GL_UNSIGNED_INT, 0);
+
+
+		//glBindVertexArray(VAOs[Cell1]);
+		//glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
+		//glBindVertexArray(VAOs[Cell2]);
+		//glDrawArrays(GL_TRIANGLE_FAN, 0, 8);
+
+
+
+		//glEnableVertexAttribArray(0);
+		//glBindBuffer(GL_ARRAY_BUFFER, Buffers[Cell1]);
+		//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+		//glDrawArrays(GL_TRIANGLE_FAN, 0, reader.cells[activeCell].coords.size());
+		//glDisableVertexAttribArray(0);
+
+
+
+		for (int i = 0; i < cellCount; i++)
+		{
+			glEnableVertexAttribArray(0);
+			glBindBuffer(GL_ARRAY_BUFFER, Buffers[i]);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+			glDrawArrays(GL_TRIANGLE_FAN, 0, reader.cells[i].coords.size());
+			glDisableVertexAttribArray(0);
+		}
+
+
+
+		//glEnableVertexAttribArray(0);
+		//glBindBuffer(GL_ARRAY_BUFFER, Buffers[Cell2]);
+		//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+		//glDrawArrays(GL_TRIANGLE_FAN, 0, reader.cells[activeCell + 1].coords.size());
+		//glDisableVertexAttribArray(0);
 	}
 }
