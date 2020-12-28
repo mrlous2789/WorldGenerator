@@ -45,11 +45,11 @@ void Cell::PrintProperties()
 	std::cout << std::endl;
 }
 
-void Cell::NormaliseCoords()
+void Cell::NormaliseCoords(float xDiff, float yDiff,float xEdge, float yEdge)
 {
 	for (int i = 0; i < coords.size(); i++)
 	{
-		coords[i].x = coords[i].x / 30.0f;
-		coords[i].y = coords[i].y / 30.0f;
+		coords[i].x = ((coords[i].x - xDiff) / xEdge) * -1;
+		coords[i].y = ((coords[i].y - yDiff) / yEdge) * -1;
 	}
 }

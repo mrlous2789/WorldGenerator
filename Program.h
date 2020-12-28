@@ -37,6 +37,7 @@ namespace Mer
 
 		GLuint VAOs[NumVAOs];
 		GLuint Buffers[NumBuffers];
+		GLuint colorBuffers[NumBuffers];
 		GLuint texture1;
 
 
@@ -44,10 +45,12 @@ namespace Mer
 		//std::vector<GLuint> Buffers;
 
 		GLuint program;
+		GLuint program2;
 
 		int activeCell = 0;
 		int cellCount = 5000;
 
+		GLfloat color[3] = { 0.0f,0.0f,1.0f };
 
 #define BUFFER_OFFSET(a) ((void*)(a))
 

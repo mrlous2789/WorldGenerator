@@ -32,4 +32,8 @@ private:
 	float highestY = -10.0f;
 	float lowestY = 0.0f;
 
+	void NormaliseCells();
+
+	void FindLowestAndHightest();
+
 };

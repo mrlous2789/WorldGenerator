@@ -136,6 +136,7 @@ init(void)
 	glVertexAttribPointer(cPosition, 4, GL_FLOAT,
 		GL_FALSE, 0, BUFFER_OFFSET(0));
 
+
 	//Texture Binding
 	glBindBuffer(GL_ARRAY_BUFFER, Buffers[Tex]);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(texture_coords), texture_coords, GL_STATIC_DRAW);

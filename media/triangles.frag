@@ -1,8 +1,12 @@
 #version 450 core
 
-out vec3 color;
+
+uniform vec3 color = vec3(1.0,0.0,0.0);
+out vec3 outColor;
+
+
 
 void main()
 {
-	color = vec3(1,0,0);	
+	outColor = color;	
 }

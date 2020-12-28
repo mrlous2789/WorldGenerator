@@ -23,7 +23,7 @@ public:
 	int religion = 0;//cell religion
 	std::vector<int> neighbors;//neighboring cell ids
 
-	void NormaliseCoords();
+	void NormaliseCoords(float xDiff, float yDiff, float xEdge, float yEdge);
 private:
 
 };

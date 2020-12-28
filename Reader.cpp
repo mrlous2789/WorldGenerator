@@ -47,22 +47,6 @@ bool Reader::ReadFile(std::string filename)
 						else//if its the y coord then we already have the x coord so save onto temp coords vector
 						{
 							y = ConvertToDouble(coord);
-							if (x < lowestX)
-							{
-								lowestX = x;
-							}
-							else if (x > highestX)
-							{
-								highestX = x;
-							}
-							if (y < lowestY)
-							{
-								lowestY = y;
-							}
-							else if (y > highestY)
-							{
-								highestY = y;
-							}
 							coords.push_back({ x,y,z });
 							xcoord = true;
 							coord = "";
@@ -113,13 +97,16 @@ bool Reader::ReadFile(std::string filename)
 
 
 		}
-		std::cout << "Done" << std::endl;
-		std::cout << "Highest X: " << highestX << std::endl;
-		std::cout << "Lowest X: " << lowestX << std::endl;
-		std::cout << "Highest Y: " << highestY << std::endl;
-		std::cout << "Lowest Y: " << lowestY << std::endl;
+
+		FindLowestAndHightest();
+
+
+		NormaliseCells();
+
+		FindLowestAndHightest();
 
 		file.close();
+		std::cout << "Done" << std::endl;
 		return true;
 	}
 	else//return error
@@ -199,4 +186,70 @@ void Reader::PrintDataByID(int id)//cells are sorted and ids increment by one ev
 	{
 		std::cout << "Doesnt exist" << std::endl;
 	}
+}
+void Reader::NormaliseCells()
+{
+	float xDiff = (lowestX + highestX) / 2;
+	float yDiff = (lowestY + highestY) / 2;
+
+	float xEdge = highestX + xDiff;
+	float yEdge = highestY + yDiff;
+
+	if (std::abs(lowestX) > std::abs(highestX))
+	{
+		xEdge = lowestX - xDiff;
+	}
+	else
+	{
+		xEdge = highestX - xDiff;
+	}
+	if (std::abs(lowestY) > std::abs(highestY))
+	{
+		yEdge = lowestY - yDiff;
+	}
+	else
+	{
+		yEdge = highestY - yDiff;
+	}
+
+	for (int i = 0; i < cells.size(); i++)
+	{
+		cells[i].NormaliseCoords(xDiff, yDiff, xEdge, yEdge);
+	}
+}
+void Reader::FindLowestAndHightest()
+{
+	lowestX = 0.0f;
+	lowestY = 0.0f;
+	highestX = 0.0f;
+	highestY = -10.0f;
+
+	for (int i = 0; i < cells.size(); i++)
+	{
+		for (int j = 0; j < cells[i].coords.size(); j++)
+		{
+			if (cells[i].coords[j].x > highestX)
+			{
+				highestX = cells[i].coords[j].x;
+			}
+			if (cells[i].coords[j].x < lowestX)
+			{
+				lowestX = cells[i].coords[j].x;
+			}
+			if (cells[i].coords[j].y > highestY)
+			{
+				highestY = cells[i].coords[j].y;
+			}
+			if (cells[i].coords[j].y < lowestY)
+			{
+				lowestY = cells[i].coords[j].y;
+			}
+		}
+	}
+
+
+	std::cout << "Highest X: " << highestX << std::endl;
+	std::cout << "Lowest X: " << lowestX << std::endl;
+	std::cout << "Highest Y: " << highestY << std::endl;
+	std::cout << "Lowest Y: " << lowestY << std::endl;
 }
