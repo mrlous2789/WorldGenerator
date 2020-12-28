@@ -88,7 +88,7 @@ bool Reader::ReadFile(std::string filename)
 					}
 				}
 			}
-			else if (line == "},")//save to cells vector
+			else if (line == "}," || line == "]}")//save to cells vector
 			{
 				cells.push_back(Cell(coords, id, height, biome, type, population, state, province, culture, religion, neighbors));//add cell to cells vector
 				neighbors.clear();

@@ -9,6 +9,8 @@
 #include <glm/ext/matrix_transform.hpp> // GLM: translate, rotate
 #include <glm/ext/matrix_clip_space.hpp> // GLM: perspective and ortho 
 #include <glm/gtc/type_ptr.hpp> // GLM: access to the value_ptr
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
 
 #include "Reader.h"
 
@@ -30,7 +32,6 @@ namespace Mer
 		Reader reader;
 
 
-
 		enum VAO_IDs { Cell1, Cell2, Colours, Tex, NumVAOs = 6000 };
 		enum Buffer_IDs { ArrayBuffer, NumBuffers = 6000 };
 		enum Attrib_IDs { vPosition = 0, cPosition = 1, tPosition = 2 };
@@ -43,6 +44,8 @@ namespace Mer
 
 		//std::vector<GLuint> VAOs;
 		//std::vector<GLuint> Buffers;
+
+		bool mapmode = true;
 
 		GLuint program;
 		GLuint program2;
