@@ -158,6 +158,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Cell.cpp" />
+    <ClCompile Include="GeneratedMapState.cpp" />
     <ClCompile Include="imgui.cpp" />
     <ClCompile Include="imgui_demo.cpp" />
     <ClCompile Include="imgui_draw.cpp" />
@@ -172,9 +173,17 @@
     <ClCompile Include="Project.cpp" />
     <ClCompile Include="Reader.cpp" />
     <ClCompile Include="StateMachine.cpp" />
+    <ClCompile Include="VoronoiDiagram.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Arc.h" />
+    <ClInclude Include="Beachline.h" />
+    <ClInclude Include="Box.h" />
     <ClInclude Include="Cell.h" />
+    <ClInclude Include="Diagram.h" />
+    <ClInclude Include="Event.h" />
+    <ClInclude Include="FortuneAlgorithm.h" />
+    <ClInclude Include="GeneratedMapState.h" />
     <ClInclude Include="imconfig.h" />
     <ClInclude Include="imgui.h" />
     <ClInclude Include="imgui_impl_glfw.h" />
@@ -185,16 +194,23 @@
     <ClInclude Include="imstb_truetype.h" />
     <ClInclude Include="LoadedMapState.h" />
     <ClInclude Include="LoadShaders.h" />
+    <ClInclude Include="PriorityQueue.h" />
     <ClInclude Include="Program.h" />
     <ClInclude Include="Reader.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="StateMachine.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="Project.h" />
+    <ClInclude Include="Triangulation.h" />
+    <ClInclude Include="util.h" />
+    <ClInclude Include="Vector2.h" />
+    <ClInclude Include="VoronoiDiagram.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="media\triangles.frag" />
-    <None Include="media\triangles.vert" />
+    <None Include="media\cells.frag" />
+    <None Include="media\cells.vert" />
+    <None Include="media\points.frag" />
+    <None Include="media\points.vert" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

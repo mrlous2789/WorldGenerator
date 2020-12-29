@@ -13,10 +13,11 @@ namespace Mer
 		ImGui::CreateContext();
 		ImGui_ImplGlfw_InitForOpenGL(_data->window, false);
 		ImGui_ImplOpenGL3_Init("#version 400");
-		//ImGui::SetWindowFontScale(20.f);
+		//ImGui::SetWindowFontScale(20.0f);
 		ImGuiIO& io = ImGui::GetIO();
 
 		io.Fonts->AddFontFromFileTTF("Fonts/Atteron.ttf", 18.0f, NULL, NULL);
+		
 
 		cellCount = reader.cells.size();
 
@@ -51,17 +52,12 @@ namespace Mer
 			glUseProgram(program);
 
 		}
-		glEnableVertexAttribArray(0);
 
 
-
-		//adding the Uniform to the shader
-		//int mvpLoc = glGetUniformLocation(program, "mvp");
-		//glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, glm::value_ptr(mvp));
 		ShaderInfo  shaders[] =
 		{
-			{ GL_VERTEX_SHADER, "media/triangles.vert" },
-			{ GL_FRAGMENT_SHADER, "media/triangles.frag" },
+			{ GL_VERTEX_SHADER, "media/cells.vert" },
+			{ GL_FRAGMENT_SHADER, "media/cells.frag" },
 			{ GL_NONE, NULL }
 		};
 
@@ -91,7 +87,7 @@ namespace Mer
 
 		for (int i = 0; i < cellCount; i++)
 		{
-			if (mapmode)
+			if (mapmode == 1)
 			{
 				switch (reader.cells[i].biome)//decide what the color cell should be
 				{
@@ -163,7 +159,7 @@ namespace Mer
 					break;
 				}
 			}
-			else
+			else if(mapmode == 0)
 			{
 				if (reader.cells[i].type == "ocean")
 				{
@@ -203,12 +199,13 @@ namespace Mer
 		if (ImGui::Button("Biomes"))
 		{
 			std::cout << "Button Pressed" << std::endl;
-			mapmode = !mapmode;
+			mapmode = 1;
 		}
-
-		ImGui::Text("Hello World");
-
-
+		if (ImGui::Button("Land"))
+		{
+			std::cout << "Button Pressed" << std::endl;
+			mapmode = 0;
+		}
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

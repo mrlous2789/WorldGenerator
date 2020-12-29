@@ -1,12 +1,13 @@
 #include "Program.h"
-#include "LoadedMapState.h"
+//#include "LoadedMapState.h"
+#include "GeneratedMapState.h"
 namespace Mer
 {
 	Program::Program()
 	{
 		if (Init())
 		{
-			this->_data->machine.AddState(StateRef(new LoadedMapState(_data)));
+			this->_data->machine.AddState(StateRef(new GeneratedMapState(_data)));
 			Run();
 		}
 	}

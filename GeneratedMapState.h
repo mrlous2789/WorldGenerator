@@ -1,15 +1,14 @@
 #pragma once
 #include "State.h"
 #include "Program.h"
-#include "Reader.h"
+#include "VoronoiDiagram.h"
 
 namespace Mer
 {
-	class LoadedMapState : public State
+	class GeneratedMapState : public State
 	{
 	public:
-		LoadedMapState(ProgramDataReF data);
-
+		GeneratedMapState(ProgramDataReF data);
 		void Init();
 		void HandleInput();
 		void Update();
@@ -17,6 +16,7 @@ namespace Mer
 		void CleanUp();
 	private:
 		ProgramDataReF _data;
+		VoronoiDiagram vd;
 
 		enum VAO_IDs { Cell1, Cell2, Colours, Tex, NumVAOs = 6000 };
 		enum Buffer_IDs { ArrayBuffer, NumBuffers = 6000 };
@@ -26,18 +26,9 @@ namespace Mer
 		GLuint Buffers[NumBuffers];
 		GLuint colorBuffers[NumBuffers];
 
-		int mapmode = 1;
-
 		GLuint program;
-		GLuint program2;
 
-		Reader reader;
-
-		int activeCell = 0;
-		int cellCount = 5000;
-
-		GLfloat color[3] = { 0.0f,0.0f,1.0f };
-
+		std::vector<double> coords;
 	};
 }
 

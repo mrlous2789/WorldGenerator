@@ -46,6 +46,12 @@
     <ClCompile Include="LoadedMapState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedMapState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VoronoiDiagram.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stb_image.h" />
@@ -95,16 +101,58 @@
     <ClInclude Include="LoadedMapState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GeneratedMapState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VoronoiDiagram.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Beachline.h">
+      <Filter>MyGAL</Filter>
+    </ClInclude>
+    <ClInclude Include="Box.h">
+      <Filter>MyGAL</Filter>
+    </ClInclude>
+    <ClInclude Include="Diagram.h">
+      <Filter>MyGAL</Filter>
+    </ClInclude>
+    <ClInclude Include="Event.h">
+      <Filter>MyGAL</Filter>
+    </ClInclude>
+    <ClInclude Include="FortuneAlgorithm.h">
+      <Filter>MyGAL</Filter>
+    </ClInclude>
+    <ClInclude Include="PriorityQueue.h">
+      <Filter>MyGAL</Filter>
+    </ClInclude>
+    <ClInclude Include="Triangulation.h">
+      <Filter>MyGAL</Filter>
+    </ClInclude>
+    <ClInclude Include="util.h">
+      <Filter>MyGAL</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector2.h">
+      <Filter>MyGAL</Filter>
+    </ClInclude>
+    <ClInclude Include="Arc.h">
+      <Filter>MyGAL</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="media\textures\awesomeface.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="media\triangles.frag">
+    <None Include="media\cells.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="media\triangles.vert">
+    <None Include="media\cells.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="media\points.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="media\points.vert">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
@@ -120,6 +168,9 @@
     </Filter>
     <Filter Include="DearImGUI">
       <UniqueIdentifier>{c0d8b88e-4537-4280-8a3b-0e28c187d015}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MyGAL">
+      <UniqueIdentifier>{4b24afc3-4e6f-4b54-885e-3c87d9bdd8b3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
