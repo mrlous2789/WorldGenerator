@@ -18,8 +18,8 @@ namespace Mer
 		ProgramDataReF _data;
 		VoronoiDiagram vd;
 
-		enum VAO_IDs { Cell1, Cell2, Colours, Tex, NumVAOs = 6000 };
-		enum Buffer_IDs { ArrayBuffer, NumBuffers = 6000 };
+		enum VAO_IDs { Cell1, Cell2, Colours, Tex, NumVAOs = 8000 };
+		enum Buffer_IDs { ArrayBuffer, NumBuffers = 8000 };
 		enum Attrib_IDs { vPosition = 0, cPosition = 1, tPosition = 2 };
 
 		GLuint VAOs[NumVAOs];
@@ -29,6 +29,8 @@ namespace Mer
 		GLuint program;
 
 		std::vector<double> coords;
+
+		GLfloat color[3] = { 0.0f,0.0f,1.0f };
 	};
 }
 

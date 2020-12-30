@@ -182,6 +182,7 @@
     <ClInclude Include="Cell.h" />
     <ClInclude Include="Diagram.h" />
     <ClInclude Include="Event.h" />
+    <ClInclude Include="FastNoiseLite.h" />
     <ClInclude Include="FortuneAlgorithm.h" />
     <ClInclude Include="GeneratedMapState.h" />
     <ClInclude Include="imconfig.h" />

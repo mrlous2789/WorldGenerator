@@ -3,8 +3,12 @@
 #include <glm/glm.hpp>
 #include <random>
 #include <chrono>
+#include <stdlib.h>
+#include <time.h>
 #include <iostream>
 #include "FortuneAlgorithm.h"
+#include "Cell.h"
+#include "FastNoiseLite.h"
 
 namespace Mer
 {
@@ -19,20 +23,20 @@ namespace Mer
 		void outputSites();
 		void Compute();
 
-		void ConvertData();
+		std::vector<Cell> cells;
 
-		std::vector <glm::vec2> getRelaxedPoints();
 	private:
 
 		
 		std::vector<glm::vec2> sites;
 
+		template<typename T>
+		mygal::Diagram<T> GenerateDiagram(const std::vector<mygal::Vector2<T>>& points);
 
 		std::vector<mygal::Vector2<double>> points;
 
 		std::vector<mygal::Vector2<double>> relaxedPoints;
 		std::vector <glm::vec2> convertedRelaxedPoints;
-
 
 	};
 }

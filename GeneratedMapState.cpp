@@ -9,9 +9,6 @@ namespace Mer
 	{
 		vd.GenerateSites(NumBuffers);
 		vd.Compute();
-		vd.ConvertData();
-		
-		//vd.outputSites();
 
 
 
@@ -21,17 +18,33 @@ namespace Mer
 		glPointSize(1.0f);
 		
 
-		for (int i = 0; i < vd.getRelaxedPoints().size(); i++)
+		for (int i = 0; i < vd.cells.size(); i++)
 		{
 			glBindBuffer(GL_ARRAY_BUFFER, Buffers[i]);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2), &vd.getRelaxedPoints()[i], GL_STATIC_DRAW);
-			glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+			glBufferData(GL_ARRAY_BUFFER,vd.cells[i].coords.size() * sizeof(glm::vec3), &vd.cells[i].coords.front(), GL_STATIC_DRAW);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+			if (vd.cells[i].height < 0)
+			{
+				color[0] = 0.0f;
+				color[1] = 0.0f;
+				color[2] = 1.0f;
+			}
+			else
+			{
+				color[0] = 0.0f;
+				color[1] = 1.0f;
+				color[2] = 0.0f;
+			}
+
+			GLint myLoc = glGetUniformLocation(program, "color");
+			glProgramUniform3fv(program, myLoc, 1, color);
 		}
 		
 		ShaderInfo  shaders[] =
 		{
-			{ GL_VERTEX_SHADER, "media/points.vert" },
-			{ GL_FRAGMENT_SHADER, "media/points.frag" },
+			{ GL_VERTEX_SHADER, "media/cells.vert" },
+			{ GL_FRAGMENT_SHADER, "media/cells.frag" },
 			{ GL_NONE, NULL }
 		};
 
@@ -54,15 +67,31 @@ namespace Mer
 
 		glEnableVertexAttribArray(0);
 
-		for (int i = 0; i < vd.getRelaxedPoints().size(); i++)
+		for (int i = 0; i < vd.cells.size(); i++)
 		{
+			if (vd.cells[i].height < 0.1)
+			{
+				color[0] = 0.0f;
+				color[1] = 0.0f;
+				color[2] = 1.0f;
+			}
+			else
+			{
+				color[0] = 0.0f;
+				color[1] = 1.0f;
+				color[2] = 0.0f;
+			}
+
+			GLint myLoc = glGetUniformLocation(program, "color");
+			glProgramUniform3fv(program, myLoc, 1, color);
+
 			glBindBuffer(GL_ARRAY_BUFFER, Buffers[i]);
-			glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
-			glDrawArrays(GL_POINTS, 0, 2);
+
+
+			glDrawArrays(GL_TRIANGLE_FAN, 0, vd.cells[i].coords.size());
 		}
-
-
 
 		glDisableVertexAttribArray(0);
 		glUseProgram(program);

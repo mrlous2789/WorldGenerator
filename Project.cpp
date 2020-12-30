@@ -36,7 +36,7 @@ GLuint texture1;
 
 const GLuint  NumVertices = 36;
 
-Reader reader;
+//Reader reader;
 
 //----------------------------------------------------------------------------
 //
