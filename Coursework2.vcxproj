@@ -173,7 +173,7 @@
     <ClCompile Include="Project.cpp" />
     <ClCompile Include="Reader.cpp" />
     <ClCompile Include="StateMachine.cpp" />
-    <ClCompile Include="VoronoiDiagram.cpp" />
+    <ClCompile Include="WorldGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Arc.h" />
@@ -205,7 +205,7 @@
     <ClInclude Include="Triangulation.h" />
     <ClInclude Include="util.h" />
     <ClInclude Include="Vector2.h" />
-    <ClInclude Include="VoronoiDiagram.h" />
+    <ClInclude Include="WorldGenerator.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="media\cells.frag" />

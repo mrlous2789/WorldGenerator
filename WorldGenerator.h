@@ -12,10 +12,10 @@
 
 namespace Mer
 {
-	class VoronoiDiagram
+	class WorldGenerator
 	{
 	public:
-		VoronoiDiagram();
+		WorldGenerator();
 
 		void GenerateSites(int numSites);
 

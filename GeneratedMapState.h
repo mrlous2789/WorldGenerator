@@ -1,7 +1,7 @@
 #pragma once
 #include "State.h"
 #include "Program.h"
-#include "VoronoiDiagram.h"
+#include "WorldGenerator.h"
 
 namespace Mer
 {
@@ -16,7 +16,7 @@ namespace Mer
 		void CleanUp();
 	private:
 		ProgramDataReF _data;
-		VoronoiDiagram vd;
+		WorldGenerator wg;
 
 		enum VAO_IDs { Cell1, Cell2, Colours, Tex, NumVAOs = 8000 };
 		enum Buffer_IDs { ArrayBuffer, NumBuffers = 8000 };

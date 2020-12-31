@@ -7,8 +7,8 @@ namespace Mer
 	}
 	void GeneratedMapState::Init()
 	{
-		vd.GenerateSites(NumBuffers);
-		vd.Compute();
+		wg.GenerateSites(NumBuffers);
+		wg.Compute();
 
 
 
@@ -18,13 +18,13 @@ namespace Mer
 		glPointSize(1.0f);
 		
 
-		for (int i = 0; i < vd.cells.size(); i++)
+		for (int i = 0; i < wg.cells.size(); i++)
 		{
 			glBindBuffer(GL_ARRAY_BUFFER, Buffers[i]);
-			glBufferData(GL_ARRAY_BUFFER,vd.cells[i].coords.size() * sizeof(glm::vec3), &vd.cells[i].coords.front(), GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, wg.cells[i].coords.size() * sizeof(glm::vec3), &wg.cells[i].coords.front(), GL_STATIC_DRAW);
 			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
-			if (vd.cells[i].height < 0)
+			if (wg.cells[i].height < 0)
 			{
 				color[0] = 0.0f;
 				color[1] = 0.0f;
@@ -67,9 +67,9 @@ namespace Mer
 
 		glEnableVertexAttribArray(0);
 
-		for (int i = 0; i < vd.cells.size(); i++)
+		for (int i = 0; i < wg.cells.size(); i++)
 		{
-			if (vd.cells[i].height < 0.1)
+			if (wg.cells[i].height < 0.1)
 			{
 				color[0] = 0.0f;
 				color[1] = 0.0f;
@@ -90,7 +90,7 @@ namespace Mer
 
 
 
-			glDrawArrays(GL_TRIANGLE_FAN, 0, vd.cells[i].coords.size());
+			glDrawArrays(GL_TRIANGLE_FAN, 0, wg.cells[i].coords.size());
 		}
 
 		glDisableVertexAttribArray(0);

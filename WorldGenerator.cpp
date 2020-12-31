@@ -1,12 +1,12 @@
-#include "VoronoiDiagram.h"
+#include "WorldGenerator.h"
 namespace Mer
 {
-	VoronoiDiagram::VoronoiDiagram()
+	WorldGenerator::WorldGenerator()
 	{
 
 	}
 
-	void VoronoiDiagram::GenerateSites(int numSites)
+	void WorldGenerator::GenerateSites(int numSites)
 	{
 		uint64_t seed = std::chrono::system_clock::now().time_since_epoch().count();
 
@@ -22,12 +22,12 @@ namespace Mer
 		}
 	}
 
-	std::vector<glm::vec2> VoronoiDiagram::getSites()
+	std::vector<glm::vec2> WorldGenerator::getSites()
 	{
 		return sites;
 	}
 
-	void VoronoiDiagram::outputSites()
+	void WorldGenerator::outputSites()
 	{
 		for (int i = 0; i < sites.size(); i++)
 		{
@@ -35,7 +35,7 @@ namespace Mer
 		}
 	}
 
-	void VoronoiDiagram::Compute()
+	void WorldGenerator::Compute()
 	{
 		FastNoiseLite noise;
 
@@ -59,6 +59,8 @@ namespace Mer
 
 		auto triangulation = diagram.computeTriangulation();
 
+		int id = 0;
+
 		for (const auto& site : diagram.getSites())
 		{
 			auto center = site.point;
@@ -78,6 +80,7 @@ namespace Mer
 
 			auto start = halfedge;
 			Cell temp = Cell();
+			temp.id = id++;
 			temp.height = noise.GetNoise((site.point.x * 20) + offset, (site.point.y * 20) + offset);
 			//std::cout << noise.GetNoise(site.point.x, site.point.y) << std::endl;
 			while (halfedge != nullptr)
@@ -91,11 +94,10 @@ namespace Mer
 					break;
 			}
 			cells.push_back(temp);
-			//std::cout << temp.height << std::endl;
 		}
 	}
 	template<typename T>
-	mygal::Diagram<T> VoronoiDiagram::GenerateDiagram(const std::vector<mygal::Vector2<T>>& points)
+	mygal::Diagram<T> WorldGenerator::GenerateDiagram(const std::vector<mygal::Vector2<T>>& points)
 	{
 		auto algorithm = mygal::FortuneAlgorithm<double>(points);
 		algorithm.construct();
