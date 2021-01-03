@@ -27,6 +27,7 @@ namespace Mer
 
 	void WorldGenerator::Generate(int numSites)
 	{
+		cells.clear();
 		std::vector<mygal::Vector2<double>> points = GenerateSites(numSites);
 		
 		auto diagram = GenerateDiagram(points);
@@ -36,8 +37,6 @@ namespace Mer
 			points = diagram.computeLloydRelaxation();
 			diagram = GenerateDiagram(points);
 		}
-
-		diagram.intersect(mygal::Box<double>{-1, -1, 1, 1});
 
 		auto triangulation = diagram.computeTriangulation();
 
@@ -64,9 +63,14 @@ namespace Mer
 			}
 
 			auto start = halfedge;
+
 			Cell temp = Cell();
 			temp.id = site.index;
 			temp.height = -1;
+			if (center.x < 0.5 && center.x > -0.5 && center.y < 0.5 && center.y > -0.5)
+			{
+				temp.suitable = true;
+			}
 			for (const auto& j : triangulation.getNeighbors(site.index))
 			{
 				temp.neighbors.push_back(j);
@@ -94,7 +98,7 @@ namespace Mer
 	{
 		auto algorithm = mygal::FortuneAlgorithm<double>(points);
 		algorithm.construct();
-		algorithm.bound(mygal::Box<double>{-1.05, -1.05, 1.05, 1.05});
+		algorithm.bound(mygal::Box<double>{-1, -1, 1, 1});
 		auto diagram = algorithm.getDiagram();
 		diagram.intersect(mygal::Box<double>{-1, -1, 1, 1});
 		return diagram;
@@ -119,17 +123,17 @@ namespace Mer
 		int numOfPoints = 15;
 		for (int i = 0; i < numOfPoints; i++)
 		{
-			if (i > 1)
+			if (i > 0)
 			{
 				heightMax = 4000;
 			}
 			float heightMultiplier = 1.0f;
 			int heightIncrement = 10;
 			int startIndex = rand() % cells.size();
-			//while (cells[startIndex].edited == true)
-			//{
-			//	startIndex = rand() % cells.size();
-			//}
+			while (!cells[startIndex].suitable)
+			{
+				startIndex = rand() % cells.size();
+			}
 			cellQueue.push(&cells[startIndex]);
 			cellQueue.front()->added = true;
 			cellQueue.front()->height = heightMax;
@@ -175,7 +179,55 @@ namespace Mer
 	}
 	void WorldGenerator::GenerateNations()
 	{
+		int numOfNations = 12;
 
+		std::vector<std::queue<Cell*>> nationsQueue;
+
+		int cellCount = 0;
+
+		for (int i = 0; i < numOfNations; i++)
+		{
+			std::queue<Cell*> temp;
+			int randIndex = rand() % cells.size();
+			while (cells[randIndex].height <= 0)
+			{
+				randIndex = rand() % cells.size();
+			}
+			temp.push(&cells[randIndex]);
+			if (temp.front()->height > 0)
+			{
+				temp.front()->state = i + 1;
+			}
+			temp.front()->capital = true;
+			temp.front()->nation = true;
+			nationsQueue.push_back(temp);
+			cellCount++;
+		}
+		while (cellCount < cells.size())
+		{
+			for (int i = 0; i < nationsQueue.size(); i++)
+			{
+				if (!nationsQueue[i].empty())
+				{
+					for (int j = 0; j < nationsQueue[i].front()->neighbors.size(); j++)
+					{
+						if (!cells[nationsQueue[i].front()->neighbors[j]].nation)
+						{
+							nationsQueue[i].push(&cells[nationsQueue[i].front()->neighbors[j]]);
+							cells[nationsQueue[i].front()->neighbors[j]].nation = true;
+							cellCount++;
+						}
+					}
+					if (nationsQueue[i].front()->height > 0)
+					{
+						nationsQueue[i].front()->state = i + 1;
+					}
+
+					nationsQueue[i].pop();
+				}
+			}
+		}
+		
 	}
 
 }

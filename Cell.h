@@ -29,6 +29,9 @@ namespace Mer
 		
 		bool edited = false;
 		bool added = false;
+		bool nation = false;
+		bool capital = false;
+		bool suitable = false;
 
 		void NormaliseCoords(float xDiff, float yDiff, float xEdge, float yEdge);
 

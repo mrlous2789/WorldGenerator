@@ -31,6 +31,11 @@ namespace Mer
 
 		std::vector<double> coords;
 
+		int mapmode = 0;
+
+		bool showCellBorders = true;
+		bool generateNew = false;
+
 		GLfloat color[3] = { 0.0f,0.0f,1.0f };
 	};
 }
