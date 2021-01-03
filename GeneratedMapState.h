@@ -36,6 +36,13 @@ namespace Mer
 		int numOfNations = 12;
 		int numOfHighIslands = 1;
 		int numOfLowIslands = 14;
+		int numOfCultures = 12;
+		int numOfReligions = 12;
+
+		double xpos = 0, ypos = 0;
+		int windowH = 0, windowW = 0;
+		
+		float height = 0;
 
 		bool showCellBorders = true;
 		bool generateNew = false;

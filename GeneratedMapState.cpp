@@ -16,7 +16,7 @@ namespace Mer
 
 		//io.Fonts->AddFontFromFileTTF("Fonts/Atteron.ttf", 18.0f, NULL, NULL);
 
-		wg.Generate(cellCount,numOfHighIslands,numOfLowIslands,numOfNations);
+		wg.Generate(cellCount,numOfHighIslands,numOfLowIslands,numOfNations, numOfCultures, numOfReligions);
 
 
 
@@ -68,6 +68,8 @@ namespace Mer
 		};
 		cellsShader = LoadShaders(shaders);
 		borderShader = LoadShaders(borderShaders);
+
+		glfwGetWindowSize(_data->window, &windowW, &windowH);
 	}
 	void GeneratedMapState::HandleInput()
 	{
@@ -77,7 +79,7 @@ namespace Mer
 	{
 		if (generateNew)
 		{
-			wg.Generate(cellCount, numOfHighIslands, numOfLowIslands, numOfNations);
+			wg.Generate(cellCount, numOfHighIslands, numOfLowIslands, numOfNations, numOfCultures, numOfReligions);
 			for (int i = 0; i < wg.cells.size(); i++)
 			{
 				glBindBuffer(GL_ARRAY_BUFFER, Buffers[i]);
@@ -89,6 +91,18 @@ namespace Mer
 				glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 			}
 			generateNew = false;
+		}
+
+		glfwGetCursorPos(_data->window, &xpos, &ypos);
+		xpos -= (windowW / 2);
+		xpos = xpos / (windowW / 2);
+		ypos -= (windowH / 2);
+		ypos = ypos / (windowH / 2);
+		ypos *= -1;
+
+		if (xpos >= -1 && xpos <= 1 && ypos >= -1 && ypos <= 1)
+		{
+			height = wg.getHeightofCellatCoords(xpos, ypos);
 		}
 		glfwPollEvents();
 	}
@@ -107,87 +121,52 @@ namespace Mer
 		{
 			if (mapmode == 1)
 			{
-				if (wg.cells[i].capital)
+				if (wg.cells[i].state != -1)
 				{
-					color[0] = 1.0f;
-					color[1] = 0.0f;
-					color[2] = 0.0f;
+					color[0] = wg.getNationRed(wg.cells[i].state);
+					color[1] = wg.getNationGreen(wg.cells[i].state);
+					color[2] = wg.getNationBlue(wg.cells[i].state);
 				}
 				else
 				{
-					switch (wg.cells[i].state)
-					{
-					case 1:
-						color[0] = 0.61f;
-						color[1] = 0.18f;
-						color[2] = 0.18f;
-						break;
-					case 2:
-						color[0] = 0.77f;
-						color[1] = 0.86f;
-						color[2] = 0.29f;
-						break;
-					case 3:
-						color[0] = 0.31f;
-						color[1] = 0.74f;
-						color[2] = 0.93f;
-						break;
-					case 4:
-						color[0] = 0.69f;
-						color[1] = 0.22f;
-						color[2] = 0.53f;
-						break;
-					case 5:
-						color[0] = 0.91f;
-						color[1] = 0.86f;
-						color[2] = 0.51f;
-						break;
-					case 6:
-						color[0] = 0.17f;
-						color[1] = 0.64f;
-						color[2] = 0.54f;
-						break;
-					case 7:
-						color[0] = 0.34f;
-						color[1] = 0.15f;
-						color[2] = 0.11f;
-						break;
-					case 8:
-						color[0] = 0.98f;
-						color[1] = 0.35f;
-						color[2] = 0.71f;
-						break;
-					case 9:
-						color[0] = 0.37f;
-						color[1] = 0.77f;
-						color[2] = 0.47f;
-						break;
-					case 10:
-						color[0] = 0.56f;
-						color[1] = 1.0f;
-						color[2] = 0.15f;
-						break;
-					case 11:
-						color[0] = 0.86f;
-						color[1] = 0.34f;
-						color[2] = 0.34f;
-						break;
-					case 12:
-						color[0] = 1.0f;
-						color[1] = 1.0f;
-						color[2] = 0.06f;
-						break;
-					default:
-						color[0] = 0.0f;
-						color[1] = 0.0f;
-						color[2] = 1.0f;
-						break;
-					}
+					color[0] = 0.0f;
+					color[1] = 0.0f;
+					color[2] = 1.0f;
+				}
+
+			}
+			else if (mapmode == 2)
+			{
+				if (wg.cells[i].culture != -1)
+				{
+					color[0] = wg.getCultureRed(wg.cells[i].culture);
+					color[1] = wg.getCultureGreen(wg.cells[i].culture);
+					color[2] = wg.getCultureBlue(wg.cells[i].culture);
+				}
+				else
+				{
+					color[0] = 0.0f;
+					color[1] = 0.0f;
+					color[2] = 1.0f;
+				}
+			}
+			else if (mapmode == 3)
+			{
+				if (wg.cells[i].religion != -1)
+				{
+					color[0] = wg.getReligionRed(wg.cells[i].religion);
+					color[1] = wg.getReligionGreen(wg.cells[i].religion);
+					color[2] = wg.getReligionBlue(wg.cells[i].religion);
+				}
+				else
+				{
+					color[0] = 0.0f;
+					color[1] = 0.0f;
+					color[2] = 1.0f;
 				}
 			}
 			else
 			{
-
 				if (wg.cells[i].height > 8000)
 				{
 					color[0] = 1.0f;
@@ -275,15 +254,21 @@ namespace Mer
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
-		if (ImGui::Button("Nations"))
-		{
-			std::cout << "Button Pressed" << std::endl;
-			mapmode = 1;
-		}
 		if (ImGui::Button("Land"))
 		{
-			std::cout << "Button Pressed" << std::endl;
 			mapmode = 0;
+		}
+		if (ImGui::Button("Nations"))
+		{
+			mapmode = 1;
+		}
+		if (ImGui::Button("Cultures"))
+		{
+			mapmode = 2;
+		}
+		if (ImGui::Button("Religions"))
+		{
+			mapmode = 3;
 		}
 		if (ImGui::Button("New Map") && !generateNew)
 		{
@@ -294,11 +279,12 @@ namespace Mer
 			showCellBorders = !showCellBorders;
 		}
 		
-		ImGui::SliderInt("Number of Cells", &cellCount, 3000, 12000, "%d");
-		ImGui::SliderInt("Number of High Islands", &numOfHighIslands, 1, 3, "%d");
-		ImGui::SliderInt("Number of Low Islands", &numOfLowIslands, 1, 30, "%d");
-		ImGui::SliderInt("Number of Nations", &numOfNations, 3, 25, "%d");
-
+		ImGui::SliderInt("Number of Cells", &cellCount, 3000, 12000, "%d", ImGuiSliderFlags_AlwaysClamp);
+		ImGui::SliderInt("Number of High Islands", &numOfHighIslands, 1, 3, "%d", ImGuiSliderFlags_AlwaysClamp);
+		ImGui::SliderInt("Number of Low Islands", &numOfLowIslands, 1, 30, "%d", ImGuiSliderFlags_AlwaysClamp);
+		ImGui::SliderInt("Number of Nations", &numOfNations, 3, 25, "%d", ImGuiSliderFlags_AlwaysClamp);
+		ImGui::SliderInt("Number of Cultures", &numOfCultures, 3, 25, "%d", ImGuiSliderFlags_AlwaysClamp);
+		ImGui::SliderInt("Number of Religions", &numOfReligions, 3, 25, "%d", ImGuiSliderFlags_AlwaysClamp);
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

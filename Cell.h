@@ -32,6 +32,8 @@ namespace Mer
 		bool nation = false;
 		bool capital = false;
 		bool suitable = false;
+		bool hasReligion = false;
+		bool hasCulture = false;
 
 		void NormaliseCoords(float xDiff, float yDiff, float xEdge, float yEdge);
 
