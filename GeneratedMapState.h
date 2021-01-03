@@ -19,7 +19,7 @@ namespace Mer
 		WorldGenerator wg;
 
 		enum VAO_IDs { Cells, Borders, Colours, Tex, NumVAOs = 2 };
-		enum Buffer_IDs { ArrayBuffer, NumBuffers = 8000 };
+		enum Buffer_IDs { ArrayBuffer, NumBuffers = 12000 };
 		enum Attrib_IDs { vPosition = 0, cPosition = 1, tPosition = 2 };
 
 		GLuint VAOs[NumVAOs];
@@ -32,6 +32,10 @@ namespace Mer
 		std::vector<double> coords;
 
 		int mapmode = 0;
+		int cellCount = 8000;
+		int numOfNations = 12;
+		int numOfHighIslands = 1;
+		int numOfLowIslands = 14;
 
 		bool showCellBorders = true;
 		bool generateNew = false;

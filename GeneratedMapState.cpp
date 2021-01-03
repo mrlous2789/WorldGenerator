@@ -14,9 +14,9 @@ namespace Mer
 		//ImGui::SetWindowFontScale(20.0f);
 		ImGuiIO& io = ImGui::GetIO();
 
-		io.Fonts->AddFontFromFileTTF("Fonts/Atteron.ttf", 18.0f, NULL, NULL);
+		//io.Fonts->AddFontFromFileTTF("Fonts/Atteron.ttf", 18.0f, NULL, NULL);
 
-		wg.Generate(NumBuffers);
+		wg.Generate(cellCount,numOfHighIslands,numOfLowIslands,numOfNations);
 
 
 
@@ -77,7 +77,7 @@ namespace Mer
 	{
 		if (generateNew)
 		{
-			wg.Generate(NumBuffers);
+			wg.Generate(cellCount, numOfHighIslands, numOfLowIslands, numOfNations);
 			for (int i = 0; i < wg.cells.size(); i++)
 			{
 				glBindBuffer(GL_ARRAY_BUFFER, Buffers[i]);
@@ -252,7 +252,7 @@ namespace Mer
 			glDrawArrays(GL_TRIANGLE_FAN, 0, wg.cells[i].coords.size());
 
 
-			if (showCellBorders)
+			if (showCellBorders && wg.cells[i].height > 0)
 			{
 				color[0] = 0.0f;
 				color[1] = 0.0f;
@@ -293,6 +293,12 @@ namespace Mer
 		{
 			showCellBorders = !showCellBorders;
 		}
+		
+		ImGui::SliderInt("Number of Cells", &cellCount, 3000, 12000, "%d");
+		ImGui::SliderInt("Number of High Islands", &numOfHighIslands, 1, 3, "%d");
+		ImGui::SliderInt("Number of Low Islands", &numOfLowIslands, 1, 30, "%d");
+		ImGui::SliderInt("Number of Nations", &numOfNations, 3, 25, "%d");
+
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
