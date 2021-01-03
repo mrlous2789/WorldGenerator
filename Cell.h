@@ -27,6 +27,8 @@ namespace Mer
 
 		void AddCoords(float x, float y);
 		
+		bool edited = false;
+		bool added = false;
 
 		void NormaliseCoords(float xDiff, float yDiff, float xEdge, float yEdge);
 

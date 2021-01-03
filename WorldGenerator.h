@@ -6,9 +6,10 @@
 #include <stdlib.h>
 #include <time.h>
 #include <iostream>
+#include <queue>
 #include "FortuneAlgorithm.h"
 #include "Cell.h"
-#include "FastNoiseLite.h"
+
 
 namespace Mer
 {
@@ -17,23 +18,20 @@ namespace Mer
 	public:
 		WorldGenerator();
 
-		void GenerateSites(int numSites);
-
-		std::vector<glm::vec2> getSites();
-		void outputSites();
-		void Compute();
+		void Generate(int numSites);
 
 		std::vector<Cell> cells;
 
 	private:
+		std::vector<mygal::Vector2<double>> GenerateSites(int numSites);
 
-		
-		std::vector<glm::vec2> sites;
+		void GenerateHeight();
+		void GenerateNations();
 
 		template<typename T>
 		mygal::Diagram<T> GenerateDiagram(const std::vector<mygal::Vector2<T>>& points);
 
-		std::vector<mygal::Vector2<double>> points;
+
 
 		std::vector<mygal::Vector2<double>> relaxedPoints;
 		std::vector <glm::vec2> convertedRelaxedPoints;

@@ -18,15 +18,16 @@ namespace Mer
 		ProgramDataReF _data;
 		WorldGenerator wg;
 
-		enum VAO_IDs { Cell1, Cell2, Colours, Tex, NumVAOs = 8000 };
+		enum VAO_IDs { Cells, Borders, Colours, Tex, NumVAOs = 2 };
 		enum Buffer_IDs { ArrayBuffer, NumBuffers = 8000 };
 		enum Attrib_IDs { vPosition = 0, cPosition = 1, tPosition = 2 };
 
 		GLuint VAOs[NumVAOs];
-		GLuint Buffers[NumBuffers];
-		GLuint colorBuffers[NumBuffers];
+		GLuint Buffers[NumBuffers];		
+		GLuint borderBuffers[NumBuffers];
 
-		GLuint program;
+		GLuint cellsShader;
+		GLuint borderShader;
 
 		std::vector<double> coords;
 

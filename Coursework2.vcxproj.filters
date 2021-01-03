@@ -70,7 +70,6 @@
     <ClInclude Include="Program.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="imconfig.h" />
     <ClInclude Include="imgui.h">
       <Filter>DearImGUI</Filter>
     </ClInclude>
@@ -134,11 +133,11 @@
     <ClInclude Include="Arc.h">
       <Filter>MyGAL</Filter>
     </ClInclude>
-    <ClInclude Include="FastNoiseLite.h">
-      <Filter>FastNoiseLite</Filter>
-    </ClInclude>
     <ClInclude Include="WorldGenerator.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="imconfig.h">
+      <Filter>DearImGUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -174,9 +173,6 @@
     </Filter>
     <Filter Include="MyGAL">
       <UniqueIdentifier>{4b24afc3-4e6f-4b54-885e-3c87d9bdd8b3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="FastNoiseLite">
-      <UniqueIdentifier>{cc127d1c-3176-4fa8-a4e2-13c185edd0d6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
