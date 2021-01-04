@@ -39,7 +39,7 @@ namespace Mer
 		float getReligionGreen(int id);
 		float getReligionBlue(int id);
 
-		float getHeightofCellatCoords(double xpos, double ypos);
+		Cell* getCellAtCoords(double xpos, double ypos);
 		
 	private:
 		std::vector<mygal::Vector2<double>> GenerateSites(int numSites);
@@ -48,6 +48,8 @@ namespace Mer
 		void GenerateNations(int numOfNations);
 		void GenerateCultures(int numOfCultures);
 		void GenerateReligions(int numOfReligions);
+
+		bool Intersects(double mouseX, double mouseY, double edgeX1, double edgeY1, double edgeX2, double edgeY2);
 
 		template<typename T>
 		mygal::Diagram<T> GenerateDiagram(const std::vector<mygal::Vector2<T>>& points);

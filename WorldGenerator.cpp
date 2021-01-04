@@ -151,7 +151,7 @@ namespace Mer
 					{
 						cellQueue.push(&cells[cellQueue.front()->neighbors[i]]);
 						cells[cellQueue.front()->neighbors[i]].added = true;
-						cells[cellQueue.front()->neighbors[i]].height = cellQueue.front()->height;
+						cells[cellQueue.front()->neighbors[i]].height += cellQueue.front()->height;
 					}
 				}
 				cellQueue.pop();
@@ -175,6 +175,10 @@ namespace Mer
 					cellQueue.front()->added = false;
 				}
 				cellQueue.pop();
+			}
+			for (int k = 0; k < cells.size(); k++)
+			{
+				cells[i].added = false;
 			}
 		}
 
@@ -260,19 +264,20 @@ namespace Mer
 			{
 				randIndex = rand() % cells.size();
 
-				temp.push(&cells[randIndex]);
-				temp.front()->culture = i;
-				
-				temp.front()->hasCulture = true;
-				cultureQueue.push_back(temp);
-				Culture tempCult;
-				tempCult.id = i;
-				tempCult.color[0] = colorDis(colorEngine);
-				tempCult.color[1] = colorDis(colorEngine);
-				tempCult.color[2] = colorDis(colorEngine);
-				cultures.push_back(tempCult);
-				cellCount++;
+
 			}
+			temp.push(&cells[randIndex]);
+			temp.front()->culture = i;
+
+			temp.front()->hasCulture = true;
+			cultureQueue.push_back(temp);
+			Culture tempCult;
+			tempCult.id = i;
+			tempCult.color[0] = colorDis(colorEngine);
+			tempCult.color[1] = colorDis(colorEngine);
+			tempCult.color[2] = colorDis(colorEngine);
+			cultures.push_back(tempCult);
+			cellCount++;
 		}
 		while (cellCount < cells.size())
 		{
@@ -320,20 +325,19 @@ namespace Mer
 			while (cells[randIndex].height <= 0)
 			{
 				randIndex = rand() % cells.size();
-
-				temp.push(&cells[randIndex]);
-				temp.front()->religion = i;
-				
-				temp.front()->hasReligion = true;
-				religionQueue.push_back(temp);
-				Religion tempRel;
-				tempRel.id = i;
-				tempRel.color[0] = colorDis(colorEngine);
-				tempRel.color[1] = colorDis(colorEngine);
-				tempRel.color[2] = colorDis(colorEngine);
-				religions.push_back(tempRel);
-				cellCount++;
 			}
+			temp.push(&cells[randIndex]);
+			temp.front()->religion = i;
+
+			temp.front()->hasReligion = true;
+			religionQueue.push_back(temp);
+			Religion tempRel;
+			tempRel.id = i;
+			tempRel.color[0] = colorDis(colorEngine);
+			tempRel.color[1] = colorDis(colorEngine);
+			tempRel.color[2] = colorDis(colorEngine);
+			religions.push_back(tempRel);
+			cellCount++;
 		}
 		while (cellCount < cells.size())
 		{
@@ -414,9 +418,49 @@ namespace Mer
 	{
 		return religions[id].color[2];
 	}
-
-	float WorldGenerator::getHeightofCellatCoords(double xpos, double ypos)
+	Cell* WorldGenerator::getCellAtCoords(double xpos, double ypos)
 	{
-		return 0.0f;
+		float height = 0;
+
+		for (int i = 0; i < cells.size(); i++)
+		{
+			int counter = 0;
+			for (int j = 0, k = cells[i].coords.size() - 1; j < cells[i].coords.size(); k = j++)
+			{
+				if (Intersects(xpos, ypos, cells[i].coords[j].x, cells[i].coords[j].y, cells[i].coords[k].x, cells[i].coords[k].y))
+				{
+					counter++;
+				}
+				else
+				{
+
+				}
+			}
+			if (counter % 2 != 0)
+			{
+				std::cout << counter << std::endl;
+				return &cells[i];
+			}
+		}
+
+		return nullptr;
+		
 	}
+	bool WorldGenerator::Intersects(double mouseX, double mouseY, double edgeX1, double edgeY1, double edgeX2, double edgeY2)
+	{
+		if ((mouseY <= edgeY1) != (mouseY <= edgeY2))
+		{
+			if (mouseX <= (edgeX2 - edgeX1) * (mouseY - edgeY1) / (edgeY2 - edgeY1) + edgeX1)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			return false;
+		}
 }
