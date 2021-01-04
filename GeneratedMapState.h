@@ -47,6 +47,8 @@ namespace Mer
 		bool showCellBorders = true;
 		bool generateNew = false;
 
+		Cell* selectedCell;
+
 		GLfloat color[3] = { 0.0f,0.0f,1.0f };
 	};
 }

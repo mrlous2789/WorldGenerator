@@ -415,8 +415,51 @@ namespace Mer
 		return religions[id].color[2];
 	}
 
-	float getHeightofCellatCoords(double xpos, double ypos)
+	Cell* WorldGenerator::getCellAtCoords(double xpos, double ypos)
 	{
+		float height = 0;
+
+		for (int i = 0; i < cells.size(); i++)
+		{
+			int counter = 0;
+			for (int j = 0, k = cells[i].coords.size() - 1; j < cells[i].coords.size(); k = j++)
+			{
+				if (Intersects(xpos, ypos, cells[i].coords[j].x, cells[i].coords[j].y, cells[i].coords[k].x, cells[i].coords[k].y))
+				{
+					counter++;
+				}
+				else
+				{
+
+				}
+			}
+			if (counter % 2 != 0)
+			{
+				std::cout << counter << std::endl;
+				return &cells[i];
+			}
+		}
+
+		return nullptr;
+		
+	}
+	bool WorldGenerator::Intersects(double mouseX, double mouseY, double edgeX1, double edgeY1, double edgeX2, double edgeY2)
+	{
+		if ((mouseY <= edgeY1) != (mouseY <= edgeY2))
+		{
+			if (mouseX <= (edgeX2 - edgeX1) * (mouseY - edgeY1) / (edgeY2 - edgeY1) + edgeX1)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			return false;
+		}
 
 	}
 }
