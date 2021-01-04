@@ -36,6 +36,14 @@ namespace Mer
 		int activeCell = 0;
 		int cellCount = 5000;
 
+		char filename[128] = "testFile.geojson";
+
+		bool loadfile = false;
+		ImGuiIO& io;
+
+		void character_callback(GLFWwindow* window, unsigned int codepoint);
+		unsigned int keyCode;
+
 		GLfloat color[3] = { 0.0f,0.0f,1.0f };
 
 	};

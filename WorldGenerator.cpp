@@ -415,8 +415,8 @@ namespace Mer
 		return religions[id].color[2];
 	}
 
-	float getHeightofCellatCoords(double xpos, double ypos)
+	float WorldGenerator::getHeightofCellatCoords(double xpos, double ypos)
 	{
-
+		return 0.0f;
 	}
 }
