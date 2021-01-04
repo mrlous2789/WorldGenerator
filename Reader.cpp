@@ -10,6 +10,8 @@ namespace Mer
 	{
 		std::fstream file;
 		file.open(filename);
+		cells.clear();
+
 
 		if (file)//if file is open read file
 		{

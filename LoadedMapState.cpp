@@ -14,9 +14,9 @@ namespace Mer
 		ImGui_ImplGlfw_InitForOpenGL(_data->window, false);
 		ImGui_ImplOpenGL3_Init("#version 400");
 		//ImGui::SetWindowFontScale(20.0f);
-		ImGuiIO& io = ImGui::GetIO();
+		io = ImGui::GetIO();
 
-		io.Fonts->AddFontFromFileTTF("Fonts/Atteron.ttf", 18.0f, NULL, NULL);
+		//io.Fonts->AddFontFromFileTTF("Fonts/Atteron.ttf", 18.0f, NULL, NULL);
 		
 
 		cellCount = reader.cells.size();
@@ -26,6 +26,7 @@ namespace Mer
 
 		glUseProgram(program);
 
+		glfwSetCharCallback(_data->window, character_callback);
 
 		for (int i = 0; i < cellCount; i++)
 		{
@@ -70,6 +71,31 @@ namespace Mer
 	}
 	void LoadedMapState::Update()
 	{
+		if (loadfile)
+		{
+			
+			if (!reader.ReadFile(filename))
+			{
+				std::cout << "Error loading File" << std::endl;
+			}
+			else
+			{
+				for (int i = 0; i < cellCount; i++)
+				{
+					glBindVertexArray(i);
+					glBindBuffer(GL_ARRAY_BUFFER, Buffers[i]);
+					glBufferData(GL_ARRAY_BUFFER, reader.cells[i].coords.size() * sizeof(glm::vec3), &reader.cells[i].coords.front(), GL_STATIC_DRAW);
+					glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+				}
+			}
+			loadfile = false;
+		}
+		
+		if (io.WantCaptureKeyboard)
+		{
+			io.AddInputCharacter(keyCode);
+		}
+
 		glfwPollEvents();
 	}
 	void LoadedMapState::Draw()
@@ -206,6 +232,11 @@ namespace Mer
 			std::cout << "Button Pressed" << std::endl;
 			mapmode = 0;
 		}
+		if (ImGui::Button("Load file"))
+		{
+			loadfile = true;
+		}
+		ImGui::InputText("Filename: ", filename, IM_ARRAYSIZE(filename));
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -216,5 +247,10 @@ namespace Mer
 	{
 		glDeleteBuffers(cellCount, Buffers);
 		glDeleteVertexArrays(cellCount, VAOs);
+	}
+
+	void LoadedMapState::character_callback(GLFWwindow* window, unsigned int codepoint)
+	{
+		keyCode = codepoint;
 	}
 }

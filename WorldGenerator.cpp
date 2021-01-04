@@ -418,7 +418,6 @@ namespace Mer
 	{
 		return religions[id].color[2];
 	}
-
 	Cell* WorldGenerator::getCellAtCoords(double xpos, double ypos)
 	{
 		float height = 0;
@@ -464,6 +463,4 @@ namespace Mer
 		{
 			return false;
 		}
-
-	}
 }
