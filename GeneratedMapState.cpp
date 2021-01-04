@@ -213,23 +213,6 @@ namespace Mer
 				}
 			}
 
-			//if (wg.cells[i].id == 0)
-			//{
-			//	color[0] = 0.0f;
-			//	color[1] = 0.5f;
-			//	color[2] = 0.5f;
-			//}
-			//for (int j = 0; j < wg.cells[0].neighbors.size(); j++)
-			//{
-			//	if (wg.cells[i].id == wg.cells[0].neighbors[j])
-			//	{
-			//		color[0] = 0.5f;
-			//		color[1] = 0.5f;
-			//		color[2] = 0.5f;
-			//	}
-			//}
-
-
 			GLint myLoc = glGetUniformLocation(cellsShader, "color");
 			glProgramUniform3fv(cellsShader, myLoc, 1, color);
 
@@ -293,6 +276,21 @@ namespace Mer
 		ImGui::SliderInt("Number of Nations", &numOfNations, 3, 25, "%d", ImGuiSliderFlags_AlwaysClamp);
 		ImGui::SliderInt("Number of Cultures", &numOfCultures, 3, 25, "%d", ImGuiSliderFlags_AlwaysClamp);
 		ImGui::SliderInt("Number of Religions", &numOfReligions, 3, 25, "%d", ImGuiSliderFlags_AlwaysClamp);
+
+		ImGui::Text("Id: ");ImGui::SameLine();
+		ImGui::Text(std::to_string(selectedCell->id).c_str());
+
+		ImGui::Text("Height: ");ImGui::SameLine();
+		ImGui::Text(std::to_string(selectedCell->height).c_str());
+
+		ImGui::Text("State: ");ImGui::SameLine();
+		ImGui::Text(std::to_string(selectedCell->state).c_str());
+
+		ImGui::Text("Culture: "); ImGui::SameLine();
+		ImGui::Text(std::to_string(selectedCell->culture).c_str());
+
+		ImGui::Text("Religion: "); ImGui::SameLine();
+		ImGui::Text(std::to_string(selectedCell->religion).c_str());
 		//ImGui::ShowDemoWindow();
 
 		ImGui::Render();

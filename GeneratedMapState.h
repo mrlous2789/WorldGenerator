@@ -2,6 +2,7 @@
 #include "State.h"
 #include "Program.h"
 #include "WorldGenerator.h"
+#include <string>
 
 namespace Mer
 {
@@ -48,6 +49,9 @@ namespace Mer
 		bool generateNew = false;
 
 		Cell* selectedCell;
+
+		const char idchar[10] = "Id: ";
+		const char statechar[10] = "State: ";
 
 		GLfloat color[3] = { 0.0f,0.0f,1.0f };
 	};
