@@ -69,6 +69,8 @@ namespace Mer
 		cellsShader = LoadShaders(shaders);
 		borderShader = LoadShaders(borderShaders);
 
+		selectedCell = &wg.cells[0];
+
 		glfwGetWindowSize(_data->window, &windowW, &windowH);
 	}
 	void GeneratedMapState::HandleInput()
@@ -93,19 +95,29 @@ namespace Mer
 			generateNew = false;
 		}
 
-		glfwGetCursorPos(_data->window, &xpos, &ypos);
+
 		
 
-
-		if (xpos >= 0 && xpos <= windowW && ypos >= 0 && ypos <= windowH)
+		int state = glfwGetMouseButton(_data->window, GLFW_MOUSE_BUTTON_LEFT);
+		if (state == GLFW_PRESS)
 		{
-			xpos -= (windowW / 2);
-			xpos = xpos / (windowW / 2);
-			ypos -= (windowH / 2);
-			ypos = ypos / (windowH / 2);
-			ypos *= -1;
-			selectedCell = wg.getCellAtCoords(xpos, ypos);
+			
+			glfwGetCursorPos(_data->window, &xpos, &ypos);
+			if (ImGui::GetIO().WantCaptureMouse)
+			{
+
+			}
+			else if (xpos >= 0 && xpos <= windowW && ypos >= 0 && ypos <= windowH)
+			{
+				xpos -= (windowW / 2);
+				xpos = xpos / (windowW / 2);
+				ypos -= (windowH / 2);
+				ypos = ypos / (windowH / 2);
+				ypos *= -1;
+				selectedCell = wg.getCellAtCoords(xpos, ypos);
+			}
 		}
+
 		glfwPollEvents();
 	}
 	void GeneratedMapState::Draw()
@@ -291,7 +303,11 @@ namespace Mer
 
 		ImGui::Text("Religion: "); ImGui::SameLine();
 		ImGui::Text(std::to_string(selectedCell->religion).c_str());
-		//ImGui::ShowDemoWindow();
+
+		ImGui::Text("Type: "); ImGui::SameLine();
+		ImGui::Text(selectedCell->type.c_str());
+		
+		ImGui::ShowDemoWindow();
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

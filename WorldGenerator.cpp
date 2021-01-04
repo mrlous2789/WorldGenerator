@@ -171,14 +171,22 @@ namespace Mer
 			{
 				if (!cellQueue.front()->edited)
 				{
-					cellQueue.front()->height = 0;
+					cellQueue.front()->height = -1;
 					cellQueue.front()->added = false;
 				}
 				cellQueue.pop();
 			}
 			for (int k = 0; k < cells.size(); k++)
 			{
-				cells[i].added = false;
+				if (cells[k].height > 0.0f)
+				{
+					cells[k].type = "land";
+				}
+				else
+				{
+					cells[k].type = "ocean";
+				}
+				cells[k].added = false;
 			}
 		}
 
@@ -197,7 +205,7 @@ namespace Mer
 		{
 			std::queue<Cell*> temp;
 			int randIndex = rand() % cells.size();
-			while (cells[randIndex].height <= 0)
+			while (cells[randIndex].type == "ocean")
 			{
 				randIndex = rand() % cells.size();
 			}
@@ -216,7 +224,7 @@ namespace Mer
 			nations.push_back(tempNat);
 			cellCount++;
 		}
-		while (cellCount < cells.size())
+		while (!nationsQueue.empty())
 		{
 			for (int i = 0; i < nationsQueue.size(); i++)
 			{
@@ -224,23 +232,18 @@ namespace Mer
 				{
 					for (int j = 0; j < nationsQueue[i].front()->neighbors.size(); j++)
 					{
-						if (!cells[nationsQueue[i].front()->neighbors[j]].nation)
+						if (!cells[nationsQueue[i].front()->neighbors[j]].nation && cells[nationsQueue[i].front()->neighbors[j]].type == "land")
 						{
-							nationsQueue[i].push(&cells[nationsQueue[i].front()->neighbors[j]]);
 							cells[nationsQueue[i].front()->neighbors[j]].nation = true;
-							cellCount++;
+							cells[nationsQueue[i].front()->neighbors[j]].state = nationsQueue[i].front()->state;
+							nationsQueue[i].push(&cells[nationsQueue[i].front()->neighbors[j]]);
 						}
 					}
-					if (nationsQueue[i].front()->height > 0)
-					{
-						nationsQueue[i].front()->state = i;
-					}
-					else
-					{
-						nationsQueue[i].front()->state = -1;
-					}
-
 					nationsQueue[i].pop();
+				}
+				else
+				{
+					nationsQueue.erase(nationsQueue.begin() + i);
 				}
 			}
 		}
@@ -260,11 +263,9 @@ namespace Mer
 		{
 			std::queue<Cell*> temp;
 			int randIndex = rand() % cells.size();
-			while (cells[randIndex].height <= 0)
+			while (cells[randIndex].type == "ocean")
 			{
 				randIndex = rand() % cells.size();
-
-
 			}
 			temp.push(&cells[randIndex]);
 			temp.front()->culture = i;
@@ -279,7 +280,7 @@ namespace Mer
 			cultures.push_back(tempCult);
 			cellCount++;
 		}
-		while (cellCount < cells.size())
+		while (!cultureQueue.empty())
 		{
 			for (int i = 0; i < cultureQueue.size(); i++)
 			{
@@ -287,23 +288,18 @@ namespace Mer
 				{
 					for (int j = 0; j < cultureQueue[i].front()->neighbors.size(); j++)
 					{
-						if (!cells[cultureQueue[i].front()->neighbors[j]].hasCulture)
+						if (!cells[cultureQueue[i].front()->neighbors[j]].hasCulture && cells[cultureQueue[i].front()->neighbors[j]].type == "land")
 						{
-							cultureQueue[i].push(&cells[cultureQueue[i].front()->neighbors[j]]);
 							cells[cultureQueue[i].front()->neighbors[j]].hasCulture = true;
-							cellCount++;
+							cells[cultureQueue[i].front()->neighbors[j]].culture = cultureQueue[i].front()->culture;
+							cultureQueue[i].push(&cells[cultureQueue[i].front()->neighbors[j]]);
 						}
 					}
-					if (cultureQueue[i].front()->height > 0)
-					{
-						cultureQueue[i].front()->culture = i;
-					}
-					else
-					{
-						cultureQueue[i].front()->culture = -1;
-					}
-
 					cultureQueue[i].pop();
+				}
+				else
+				{
+					cultureQueue.erase(cultureQueue.begin() + i);
 				}
 			}
 		}
@@ -322,7 +318,7 @@ namespace Mer
 		{
 			std::queue<Cell*> temp;
 			int randIndex = rand() % cells.size();
-			while (cells[randIndex].height <= 0)
+			while (cells[randIndex].type == "ocean")
 			{
 				randIndex = rand() % cells.size();
 			}
@@ -339,7 +335,7 @@ namespace Mer
 			religions.push_back(tempRel);
 			cellCount++;
 		}
-		while (cellCount < cells.size())
+		while (!religionQueue.empty())
 		{
 			for (int i = 0; i < religionQueue.size(); i++)
 			{
@@ -347,23 +343,18 @@ namespace Mer
 				{
 					for (int j = 0; j < religionQueue[i].front()->neighbors.size(); j++)
 					{
-						if (!cells[religionQueue[i].front()->neighbors[j]].hasReligion)
+						if (!cells[religionQueue[i].front()->neighbors[j]].hasReligion && cells[religionQueue[i].front()->neighbors[j]].type == "land")
 						{
-							religionQueue[i].push(&cells[religionQueue[i].front()->neighbors[j]]);
 							cells[religionQueue[i].front()->neighbors[j]].hasReligion = true;
-							cellCount++;
+							cells[religionQueue[i].front()->neighbors[j]].religion = religionQueue[i].front()->religion;
+							religionQueue[i].push(&cells[religionQueue[i].front()->neighbors[j]]);
 						}
 					}
-					if (religionQueue[i].front()->height > 0)
-					{
-						religionQueue[i].front()->religion = i;
-					}
-					else
-					{
-						religionQueue[i].front()->religion = -1;
-					}
-
 					religionQueue[i].pop();
+				}
+				else
+				{
+					religionQueue.erase(religionQueue.begin() + i);
 				}
 			}
 		}
@@ -438,7 +429,6 @@ namespace Mer
 			}
 			if (counter % 2 != 0)
 			{
-				std::cout << counter << std::endl;
 				return &cells[i];
 			}
 		}
@@ -463,4 +453,5 @@ namespace Mer
 		{
 			return false;
 		}
+	}
 }

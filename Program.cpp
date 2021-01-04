@@ -7,7 +7,7 @@ namespace Mer
 	{
 		if (Init())
 		{
-			this->_data->machine.AddState(StateRef(new LoadedMapState(_data)));
+			this->_data->machine.AddState(StateRef(new GeneratedMapState(_data)));
 			Run();
 		}
 	}

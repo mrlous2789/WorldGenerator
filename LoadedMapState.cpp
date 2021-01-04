@@ -14,7 +14,7 @@ namespace Mer
 		ImGui_ImplGlfw_InitForOpenGL(_data->window, false);
 		ImGui_ImplOpenGL3_Init("#version 400");
 		//ImGui::SetWindowFontScale(20.0f);
-		io = ImGui::GetIO();
+		ImGuiIO& io = ImGui::GetIO();
 
 		//io.Fonts->AddFontFromFileTTF("Fonts/Atteron.ttf", 18.0f, NULL, NULL);
 		
@@ -26,7 +26,6 @@ namespace Mer
 
 		glUseProgram(program);
 
-		glfwSetCharCallback(_data->window, character_callback);
 
 		for (int i = 0; i < cellCount; i++)
 		{
@@ -91,10 +90,6 @@ namespace Mer
 			loadfile = false;
 		}
 		
-		if (io.WantCaptureKeyboard)
-		{
-			io.AddInputCharacter(keyCode);
-		}
 
 		glfwPollEvents();
 	}
@@ -247,10 +242,5 @@ namespace Mer
 	{
 		glDeleteBuffers(cellCount, Buffers);
 		glDeleteVertexArrays(cellCount, VAOs);
-	}
-
-	void LoadedMapState::character_callback(GLFWwindow* window, unsigned int codepoint)
-	{
-		keyCode = codepoint;
 	}
 }
