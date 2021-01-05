@@ -35,7 +35,6 @@ namespace Mer
 		glUseProgram(program);
 
 
-		glfwSetCharCallback(_data->window, character_callback);
 		
 		color[0] = 0.0f;
 		color[1] = 0.0f;

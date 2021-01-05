@@ -234,7 +234,7 @@ namespace Mer
 				{
 					for (int j = 0; j < nationsQueue[i].front()->neighbors.size(); j++)
 					{
-						if (!cells->at(nationsQueue[i].front()->neighbors[j]).nation)
+						if (!cells->at(nationsQueue[i].front()->neighbors[j]).nation && cells->at(nationsQueue[i].front()->neighbors[j]).type == "land")
 						{
 							cells->at(nationsQueue[i].front()->neighbors[j]).nation = true;
 							cells->at(nationsQueue[i].front()->neighbors[j]).state = nationsQueue[i].front()->state;
@@ -292,7 +292,7 @@ namespace Mer
 				{
 					for (int j = 0; j < cultureQueue[i].front()->neighbors.size(); j++)
 					{
-						if (!cells->at(cultureQueue[i].front()->neighbors[j]).hasCulture)
+						if (!cells->at(cultureQueue[i].front()->neighbors[j]).hasCulture && cells->at(cultureQueue[i].front()->neighbors[j]).type == "land")
 						{
 							cells->at(cultureQueue[i].front()->neighbors[j]).hasCulture = true;
 							cells->at(cultureQueue[i].front()->neighbors[j]).culture = cultureQueue[i].front()->culture;
@@ -368,5 +368,6 @@ namespace Mer
 
 			}
 		}
+		return religions;
 	}
 }
