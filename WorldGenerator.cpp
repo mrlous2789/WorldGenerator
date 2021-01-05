@@ -169,13 +169,14 @@ namespace Mer
 			{
 				if (!cellQueue.front()->edited)
 				{
-					cellQueue.front()->height = 0;
+					cellQueue.front()->height = -1;
 					cellQueue.front()->added = false;
 				}
 				cellQueue.pop();
 			}
 			for (int k = 0; k < cells->size(); k++)
 			{
+
 				if (cells->at(k).height > 0.0f)
 				{
 					cells->at(k).type = "land";
@@ -185,6 +186,7 @@ namespace Mer
 					cells->at(k).type = "ocean";
 				}
 				cells->at(k).added = false;
+
 			}
 		}
 
@@ -203,6 +205,7 @@ namespace Mer
 		for (int i = 0; i < numOfNations; i++)
 		{
 			std::queue<Cell*> temp;
+
 			int randIndex = rand() % cells->size();
 			while (cells->at(randIndex).type == "ocean")
 			{
@@ -262,6 +265,7 @@ namespace Mer
 		for (int i = 0; i < numOfCultures; i++)
 		{
 			std::queue<Cell*> temp;
+      
 			int randIndex = rand() % cells->size();
 			while (cells->at(randIndex).type == "ocean")
 			{
@@ -320,7 +324,7 @@ namespace Mer
 		for (int i = 0; i < numOfReligions; i++)
 		{
 			std::queue<Cell*> temp;
-			
+
 			int randIndex = rand() % cells->size();
 			while (cells->at(randIndex).type == "ocean")
 			{
@@ -347,6 +351,7 @@ namespace Mer
 				{
 					for (int j = 0; j < religionQueue[i].front()->neighbors.size(); j++)
 					{
+
 						if (!cells->at(religionQueue[i].front()->neighbors[j]).hasReligion && cells->at(religionQueue[i].front()->neighbors[j]).type == "land")
 						{
 							cells->at(religionQueue[i].front()->neighbors[j]).hasReligion = true;
@@ -360,5 +365,8 @@ namespace Mer
 				{
 					religionQueue.erase(religionQueue.begin() + i);
 				}
+
 			}
 		}
+	}
+}

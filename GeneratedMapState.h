@@ -36,7 +36,7 @@ namespace Mer
 		int cellCount = 8000;
 		int numOfNations = 12;
 		int numOfHighIslands = 1;
-		int numOfLowIslands = 14;
+		int numOfLowIslands = 4;
 		int numOfCultures = 12;
 		int numOfReligions = 12;
 
@@ -52,6 +52,12 @@ namespace Mer
 
 		const char idchar[10] = "Id: ";
 		const char statechar[10] = "State: ";
+
+		glm::mat4 model;
+		glm::mat4 view;
+		glm::mat4 projection;
+		glm::mat4 mvp;
+
 
 		GLfloat color[3] = { 0.0f,0.0f,1.0f };
 	};

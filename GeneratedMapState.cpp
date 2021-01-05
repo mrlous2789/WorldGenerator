@@ -55,6 +55,30 @@ namespace Mer
 
 		selectedCell = &wm.cells[0];
 
+		glUseProgram(cellsShader);
+
+		// creating the model matrix
+		model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1.0f, 1.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+
+		// creating the view matrix
+		view = glm::mat4(1.0f);
+		view = glm::translate(view, glm::vec3(0.0f, 0.0f, 0.0f));
+
+		// creating the projection matrix
+		projection = glm::perspective(90.0f, 1.0f, 0.1f, 20.0f);
+
+		// Adding all matrices up to create combined matrix
+		mvp = model * view * projection;
+
+
+		//adding the Uniform to the shader
+		int mvpLoc = glGetUniformLocation(cellsShader, "mvp");
+		glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, glm::value_ptr(mvp));
+
+
 		glfwGetWindowSize(_data->window, &windowW, &windowH);
 	}
 	void GeneratedMapState::HandleInput()
@@ -79,9 +103,8 @@ namespace Mer
 			generateNew = false;
 		}
 
-		glfwGetCursorPos(_data->window, &xpos, &ypos);
-		
 
+		
 
 		int state = glfwGetMouseButton(_data->window, GLFW_MOUSE_BUTTON_LEFT);
 		if (state == GLFW_PRESS)
@@ -99,7 +122,9 @@ namespace Mer
 				ypos -= (windowH / 2);
 				ypos = ypos / (windowH / 2);
 				ypos *= -1;
+
 				selectedCell = wm.getCellAtCoords(xpos, ypos);
+
 			}
 		}
 
@@ -217,6 +242,9 @@ namespace Mer
 			GLint myLoc = glGetUniformLocation(cellsShader, "color");
 			glProgramUniform3fv(cellsShader, myLoc, 1, color);
 
+			int mvpLoc = glGetUniformLocation(cellsShader, "mvp");
+			glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, glm::value_ptr(mvp));
+
 			glBindBuffer(GL_ARRAY_BUFFER, Buffers[i]);
 			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
@@ -293,7 +321,11 @@ namespace Mer
 
 		ImGui::Text("Religion: "); ImGui::SameLine();
 		ImGui::Text(std::to_string(selectedCell->religion).c_str());
-		//ImGui::ShowDemoWindow();
+
+		ImGui::Text("Type: "); ImGui::SameLine();
+		ImGui::Text(selectedCell->type.c_str());
+		
+		ImGui::ShowDemoWindow();
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
