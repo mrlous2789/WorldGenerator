@@ -422,10 +422,6 @@ namespace Mer
 				{
 					counter++;
 				}
-				else
-				{
-
-				}
 			}
 			if (counter % 2 != 0)
 			{
