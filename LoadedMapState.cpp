@@ -8,7 +8,7 @@ namespace Mer
 
 	void LoadedMapState::Init()
 	{
-		reader.ReadFile("testFile.geojson");
+		wm.LoadFromFile("testFile.geojson");
 
 		ImGui::CreateContext();
 		ImGui_ImplGlfw_InitForOpenGL(_data->window, false);
@@ -19,41 +19,9 @@ namespace Mer
 		//io.Fonts->AddFontFromFileTTF("Fonts/Atteron.ttf", 18.0f, NULL, NULL);
 		
 
-		cellCount = reader.cells.size();
 
-		glGenVertexArrays(cellCount, VAOs);
-		glGenBuffers(cellCount, Buffers);
-
-		glUseProgram(program);
-
-		glfwSetCharCallback(_data->window, character_callback);
-
-		for (int i = 0; i < cellCount; i++)
-		{
-			glBindVertexArray(i);
-			glBindBuffer(GL_ARRAY_BUFFER, Buffers[i]);
-			glBufferData(GL_ARRAY_BUFFER, reader.cells[i].coords.size() * sizeof(glm::vec3), &reader.cells[i].coords.front(), GL_STATIC_DRAW);
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-			if (reader.cells[i].type == "ocean")
-			{
-				color[0] = 0.0f;
-				color[1] = 0.0f;
-				color[2] = 1.0f;
-			}
-			else
-			{
-				color[0] = 0.0f;
-				color[1] = 1.0f;
-				color[2] = 0.0f;
-			}
-
-			GLint myLoc = glGetUniformLocation(program, "color");
-			glProgramUniform3fv(program, myLoc, 1, color);
-			glUseProgram(program);
-
-		}
-
+		glGenVertexArrays(1, VAOs);
+		glGenBuffers(wm.cells.size(), Buffers);
 
 		ShaderInfo  shaders[] =
 		{
@@ -64,6 +32,30 @@ namespace Mer
 
 		program = LoadShaders(shaders);
 
+		glUseProgram(program);
+
+		glfwSetCharCallback(_data->window, character_callback);
+		
+		color[0] = 0.0f;
+		color[1] = 0.0f;
+		color[2] = 1.0f;
+
+		for (int i = 0; i < wm.cells.size(); i++)
+		{
+			glBindVertexArray(i);
+			glBindBuffer(GL_ARRAY_BUFFER, Buffers[i]);
+			glBufferData(GL_ARRAY_BUFFER, wm.cells[i].coords.size() * sizeof(glm::vec3), &wm.cells[i].coords.front(), GL_STATIC_DRAW);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+			GLint myLoc = glGetUniformLocation(program, "color");
+			glProgramUniform3fv(program, myLoc, 1, color);
+
+		}
+
+		std::cout << wm.cells.size() << std::endl;
+
+		
+		
 	}
 	void LoadedMapState::HandleInput()
 	{
@@ -74,17 +66,17 @@ namespace Mer
 		if (loadfile)
 		{
 			
-			if (!reader.ReadFile(filename))
+			if (!wm.LoadFromFile(filename))
 			{
 				std::cout << "Error loading File" << std::endl;
 			}
 			else
 			{
-				for (int i = 0; i < cellCount; i++)
+				for (int i = 0; i < wm.cells.size(); i++)
 				{
 					glBindVertexArray(i);
 					glBindBuffer(GL_ARRAY_BUFFER, Buffers[i]);
-					glBufferData(GL_ARRAY_BUFFER, reader.cells[i].coords.size() * sizeof(glm::vec3), &reader.cells[i].coords.front(), GL_STATIC_DRAW);
+					glBufferData(GL_ARRAY_BUFFER, wm.cells[i].coords.size() * sizeof(glm::vec3), &wm.cells[i].coords.front(), GL_STATIC_DRAW);
 					glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 				}
 			}
@@ -111,11 +103,11 @@ namespace Mer
 
 
 
-		for (int i = 0; i < cellCount; i++)
+		for (int i = 0; i < wm.cells.size(); i++)
 		{
 			if (mapmode == 1)
 			{
-				switch (reader.cells[i].biome)//decide what the color cell should be
+				switch (wm.cells[i].biome)//decide what the color cell should be
 				{
 				case 1:
 					color[0] = 0.98f;
@@ -187,7 +179,7 @@ namespace Mer
 			}
 			else if(mapmode == 0)
 			{
-				if (reader.cells[i].type == "ocean")
+				if (wm.cells[i].type == "ocean")
 				{
 					color[0] = 0.0f;
 					color[1] = 0.0f;
@@ -209,7 +201,7 @@ namespace Mer
 			glBindBuffer(GL_ARRAY_BUFFER, Buffers[i]);
 			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
-			glDrawArrays(GL_TRIANGLE_FAN, 0, reader.cells[i].coords.size());
+			glDrawArrays(GL_TRIANGLE_FAN, 0, wm.cells[i].coords.size());
 
 
 
@@ -245,8 +237,8 @@ namespace Mer
 	}
 	void LoadedMapState::CleanUp()
 	{
-		glDeleteBuffers(cellCount, Buffers);
-		glDeleteVertexArrays(cellCount, VAOs);
+		glDeleteBuffers(wm.cells.size(), Buffers);
+		glDeleteVertexArrays(1, VAOs);
 	}
 
 	void LoadedMapState::character_callback(GLFWwindow* window, unsigned int codepoint)

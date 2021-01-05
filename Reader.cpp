@@ -6,8 +6,9 @@ namespace Mer
 	{
 
 	}
-	bool Reader::ReadFile(std::string filename)
+	std::vector<Cell> Reader::ReadCellFile(std::string filename)
 	{
+		std::vector<Cell> cells;
 		std::fstream file;
 		file.open(filename);
 		cells.clear();
@@ -96,25 +97,23 @@ namespace Mer
 					neighbors.clear();
 					coords.clear();
 				}
-
-
 			}
 
-			FindLowestAndHightest();
+			FindLowestAndHightest(cells);
 
 
-			NormaliseCells();
+			NormaliseCells(cells);
 
-			FindLowestAndHightest();
+			FindLowestAndHightest(cells);
 
 			file.close();
 			std::cout << "Done" << std::endl;
-			return true;
+			return cells;
 		}
 		else//return error
 		{
 			std::cout << "File: " + filename + " could not be opened" << std::endl;
-			return false;
+			return cells;
 		}
 
 	}
@@ -168,28 +167,7 @@ namespace Mer
 			return 0.0f;
 		}
 	}
-	void Reader::PrintData()
-	{
-		std::cout << "Cell count: " << cells.size() << std::endl;
-		cells[5].PrintProperties();
-		cells[19].PrintProperties();
-		cells[456].PrintProperties();
-	}
-	void Reader::PrintDataByID(int id)//cells are sorted and ids increment by one every time so finding data is very quick and simple
-	{
-		if (id <= cells.size())
-		{
-			if (cells[id].id == id)
-			{
-				cells[id].PrintProperties();
-			}
-		}
-		else
-		{
-			std::cout << "Doesnt exist" << std::endl;
-		}
-	}
-	void Reader::NormaliseCells()
+	void Reader::NormaliseCells(std::vector<Cell> cells)
 	{
 		float xDiff = (lowestX + highestX) / 2;
 		float yDiff = (lowestY + highestY) / 2;
@@ -219,7 +197,7 @@ namespace Mer
 			cells[i].NormaliseCoords(xDiff, yDiff, xEdge, yEdge);
 		}
 	}
-	void Reader::FindLowestAndHightest()
+	void Reader::FindLowestAndHightest(std::vector<Cell> cells)
 	{
 		lowestX = 0.0f;
 		lowestY = 0.0f;
