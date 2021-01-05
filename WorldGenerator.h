@@ -9,6 +9,9 @@
 #include <queue>
 #include "FortuneAlgorithm.h"
 #include "Cell.h"
+#include "Nation.h"
+#include "Religion.h"
+#include "Culture.h"
 
 
 namespace Mer
@@ -20,60 +23,23 @@ namespace Mer
 	public:
 		WorldGenerator();
 
-		void Generate(int numSites, int numOfHighIslands, int numOfLowIslands, int numOfNations, int numOfCultures, int numOfReligions);
+		std::vector<Cell> Generate(int numSites);
 
-		std::vector<Cell> cells;
+		//std::vector<Cell> cells;
+		void GenerateHeight(int numOfHighIslands, int numOfLowIslands, std::vector<Cell>* cells);
 
-		int getNationCount();
-		float getNationRed(int id);
-		float getNationGreen(int id);
-		float getNationBlue(int id);
-
-		int getCultureCount();
-		float getCultureRed(int id);
-		float getCultureGreen(int id);
-		float getCultureBlue(int id);
-
-		int getReligionCount();
-		float getReligionRed(int id);
-		float getReligionGreen(int id);
-		float getReligionBlue(int id);
-
-		Cell* getCellAtCoords(double xpos, double ypos);
+		std::vector<Nation> GenerateNations(int numOfNations, std::vector<Cell>* cells);
+		std::vector<Culture> GenerateCultures(int numOfCultures, std::vector<Cell>* cells);
+		std::vector<Religion> GenerateReligions(int numOfReligions, std::vector<Cell>* cells);
 		
 	private:
 		std::vector<mygal::Vector2<double>> GenerateSites(int numSites);
 
-		void GenerateHeight(int numOfHighIslands, int numOfLowIslands);
-		void GenerateNations(int numOfNations);
-		void GenerateCultures(int numOfCultures);
-		void GenerateReligions(int numOfReligions);
-
-		bool Intersects(double mouseX, double mouseY, double edgeX1, double edgeY1, double edgeX2, double edgeY2);
 
 		template<typename T>
 		mygal::Diagram<T> GenerateDiagram(const std::vector<mygal::Vector2<T>>& points);
 
-		struct Nation 
-		{
-			int id;
-			int capitalID;
-			float color[3];
-		};
-		struct Culture
-		{
-			int id;
-			float color[3];
-		};
-		struct Religion
-		{
-			int id;
-			float color[3];
-		};
 
-		std::vector<Nation> nations;
-		std::vector<Culture> cultures;
-		std::vector<Religion> religions;
 
 
 	};

@@ -174,12 +174,14 @@
     <ClCompile Include="Reader.cpp" />
     <ClCompile Include="StateMachine.cpp" />
     <ClCompile Include="WorldGenerator.cpp" />
+    <ClCompile Include="WorldManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Arc.h" />
     <ClInclude Include="Beachline.h" />
     <ClInclude Include="Box.h" />
     <ClInclude Include="Cell.h" />
+    <ClInclude Include="Culture.h" />
     <ClInclude Include="Diagram.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="FortuneAlgorithm.h" />
@@ -194,9 +196,11 @@
     <ClInclude Include="imstb_truetype.h" />
     <ClInclude Include="LoadedMapState.h" />
     <ClInclude Include="LoadShaders.h" />
+    <ClInclude Include="Nation.h" />
     <ClInclude Include="PriorityQueue.h" />
     <ClInclude Include="Program.h" />
     <ClInclude Include="Reader.h" />
+    <ClInclude Include="Religion.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="StateMachine.h" />
     <ClInclude Include="stb_image.h" />
@@ -205,6 +209,7 @@
     <ClInclude Include="util.h" />
     <ClInclude Include="Vector2.h" />
     <ClInclude Include="WorldGenerator.h" />
+    <ClInclude Include="WorldManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="media\cells.frag" />

@@ -12,12 +12,9 @@ namespace Mer
 	public:
 		Reader();
 
-		bool ReadFile(std::string filename);
+		std::vector<Cell> ReadCellFile(std::string filename);
 
-		void PrintData();
-
-		void PrintDataByID(int id);
-		std::vector<Cell> cells;
+		//std::vector<Cell> cells;
 	private:
 		bool reading = true;
 
@@ -33,9 +30,9 @@ namespace Mer
 		float highestY = -10.0f;
 		float lowestY = 0.0f;
 
-		void NormaliseCells();
+		void NormaliseCells(std::vector<Cell> cells);
 
-		void FindLowestAndHightest();
+		void FindLowestAndHightest(std::vector<Cell> cells);
 
 	};
 }

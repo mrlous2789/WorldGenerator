@@ -52,6 +52,9 @@
     <ClCompile Include="WorldGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="WorldManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stb_image.h" />
@@ -138,6 +141,18 @@
     </ClInclude>
     <ClInclude Include="imconfig.h">
       <Filter>DearImGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="WorldManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Nation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Religion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Culture.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

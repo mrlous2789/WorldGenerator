@@ -25,9 +25,9 @@ namespace Mer
 	}
 
 
-	void WorldGenerator::Generate(int numSites, int numOfHighIslands, int numOfLowIslands, int numOfNations, int numOfCultures, int numOfReligions)
+	std::vector<Cell> WorldGenerator::Generate(int numSites)
 	{
-		cells.clear();
+		std::vector<Cell> cells;
 		std::vector<mygal::Vector2<double>> points = GenerateSites(numSites);
 		
 		auto diagram = GenerateDiagram(points);
@@ -90,10 +90,7 @@ namespace Mer
 			cells.push_back(temp);
 		}
 
-		GenerateHeight(numOfHighIslands,numOfLowIslands);
-		GenerateNations(numOfNations);
-		GenerateCultures(numOfCultures);
-		GenerateReligions(numOfReligions);
+		return cells;
 	}
 	template<typename T>
 	mygal::Diagram<T> WorldGenerator::GenerateDiagram(const std::vector<mygal::Vector2<T>>& points)
@@ -106,7 +103,7 @@ namespace Mer
 		return diagram;
 	}
 
-	void WorldGenerator::GenerateHeight(int numOfHighIslands, int numOfLowIslands)
+	void WorldGenerator::GenerateHeight(int numOfHighIslands, int numOfLowIslands, std::vector<Cell>* cells)
 	{
 		std::srand(time(NULL));
 
@@ -131,12 +128,13 @@ namespace Mer
 			}
 			float heightMultiplier = 1.0f;
 			int heightIncrement = 10;
-			int startIndex = rand() % cells.size();
-			while (!cells[startIndex].suitable)
+			int startIndex = rand() % cells->size();
+			while (!cells->at(startIndex).suitable)
 			{
-				startIndex = rand() % cells.size();
+				startIndex = rand() % cells->size();
 			}
-			cellQueue.push(&cells[startIndex]);
+			
+			cellQueue.push(&cells->at(startIndex));
 			cellQueue.front()->added = true;
 			cellQueue.front()->height = heightMax;
 
@@ -147,11 +145,11 @@ namespace Mer
 
 				for (int i = 0; i < cellQueue.front()->neighbors.size(); i++)
 				{
-					if (!cells[cellQueue.front()->neighbors[i]].added)
+					if (!cells->at(cellQueue.front()->neighbors[i]).added)
 					{
-						cellQueue.push(&cells[cellQueue.front()->neighbors[i]]);
-						cells[cellQueue.front()->neighbors[i]].added = true;
-						cells[cellQueue.front()->neighbors[i]].height += cellQueue.front()->height;
+						cellQueue.push(&cells->at(cellQueue.front()->neighbors[i]));
+						cells->at(cellQueue.front()->neighbors[i]).added = true;
+						cells->at(cellQueue.front()->neighbors[i]).height += cellQueue.front()->height;
 					}
 				}
 				cellQueue.pop();
@@ -176,23 +174,26 @@ namespace Mer
 				}
 				cellQueue.pop();
 			}
-			for (int k = 0; k < cells.size(); k++)
+			for (int k = 0; k < cells->size(); k++)
 			{
-				if (cells[k].height > 0.0f)
+
+				if (cells->at(k).height > 0.0f)
 				{
-					cells[k].type = "land";
+					cells->at(k).type = "land";
 				}
 				else
 				{
-					cells[k].type = "ocean";
+					cells->at(k).type = "ocean";
 				}
-				cells[k].added = false;
+				cells->at(k).added = false;
+
 			}
 		}
 
 	}
-	void WorldGenerator::GenerateNations(int numOfNations)
+	std::vector<Nation> WorldGenerator::GenerateNations(int numOfNations, std::vector<Cell>* cells)
 	{
+		std::vector<Nation> nations;
 		std::vector<std::queue<Cell*>> nationsQueue;
 
 		int cellCount = 0;
@@ -204,12 +205,13 @@ namespace Mer
 		for (int i = 0; i < numOfNations; i++)
 		{
 			std::queue<Cell*> temp;
-			int randIndex = rand() % cells.size();
-			while (cells[randIndex].type == "ocean")
+
+			int randIndex = rand() % cells->size();
+			while (cells->at(randIndex).type == "ocean")
 			{
-				randIndex = rand() % cells.size();
+				randIndex = rand() % cells->size();
 			}
-			temp.push(&cells[randIndex]);
+			temp.push(&cells->at(randIndex));
 			temp.front()->state = i;
 
 			temp.front()->capital = true;
@@ -217,10 +219,10 @@ namespace Mer
 			nationsQueue.push_back(temp);
 			Nation tempNat;
 			tempNat.id = i;
-			tempNat.capitalID = temp.front()->id;
-			tempNat.color[0] = colorDis(colorEngine);
-			tempNat.color[1] = colorDis(colorEngine);
-			tempNat.color[2] = colorDis(colorEngine);
+			tempNat.capitalId = temp.front()->id;
+			tempNat.colour[0] = colorDis(colorEngine);
+			tempNat.colour[1] = colorDis(colorEngine);
+			tempNat.colour[2] = colorDis(colorEngine);
 			nations.push_back(tempNat);
 			cellCount++;
 		}
@@ -232,11 +234,11 @@ namespace Mer
 				{
 					for (int j = 0; j < nationsQueue[i].front()->neighbors.size(); j++)
 					{
-						if (!cells[nationsQueue[i].front()->neighbors[j]].nation && cells[nationsQueue[i].front()->neighbors[j]].type == "land")
+						if (!cells->at(nationsQueue[i].front()->neighbors[j]).nation)
 						{
-							cells[nationsQueue[i].front()->neighbors[j]].nation = true;
-							cells[nationsQueue[i].front()->neighbors[j]].state = nationsQueue[i].front()->state;
-							nationsQueue[i].push(&cells[nationsQueue[i].front()->neighbors[j]]);
+							cells->at(nationsQueue[i].front()->neighbors[j]).nation = true;
+							cells->at(nationsQueue[i].front()->neighbors[j]).state = nationsQueue[i].front()->state;
+							nationsQueue[i].push(&cells->at(nationsQueue[i].front()->neighbors[j]));
 						}
 					}
 					nationsQueue[i].pop();
@@ -247,10 +249,11 @@ namespace Mer
 				}
 			}
 		}
-		
+		return nations;
 	}
-	void WorldGenerator::GenerateCultures(int numOfCultures)
+	std::vector<Culture> WorldGenerator::GenerateCultures(int numOfCultures, std::vector<Cell>* cells)
 	{
+		std::vector<Culture> cultures;
 		std::vector<std::queue<Cell*>> cultureQueue;
 
 		int cellCount = 0;
@@ -262,21 +265,22 @@ namespace Mer
 		for (int i = 0; i < numOfCultures; i++)
 		{
 			std::queue<Cell*> temp;
-			int randIndex = rand() % cells.size();
-			while (cells[randIndex].type == "ocean")
+      
+			int randIndex = rand() % cells->size();
+			while (cells->at(randIndex).type == "ocean")
 			{
-				randIndex = rand() % cells.size();
+				randIndex = rand() % cells->size();
 			}
-			temp.push(&cells[randIndex]);
+			temp.push(&cells->at(randIndex));
 			temp.front()->culture = i;
 
 			temp.front()->hasCulture = true;
 			cultureQueue.push_back(temp);
 			Culture tempCult;
 			tempCult.id = i;
-			tempCult.color[0] = colorDis(colorEngine);
-			tempCult.color[1] = colorDis(colorEngine);
-			tempCult.color[2] = colorDis(colorEngine);
+			tempCult.colour[0] = colorDis(colorEngine);
+			tempCult.colour[1] = colorDis(colorEngine);
+			tempCult.colour[2] = colorDis(colorEngine);
 			cultures.push_back(tempCult);
 			cellCount++;
 		}
@@ -288,11 +292,11 @@ namespace Mer
 				{
 					for (int j = 0; j < cultureQueue[i].front()->neighbors.size(); j++)
 					{
-						if (!cells[cultureQueue[i].front()->neighbors[j]].hasCulture && cells[cultureQueue[i].front()->neighbors[j]].type == "land")
+						if (!cells->at(cultureQueue[i].front()->neighbors[j]).hasCulture)
 						{
-							cells[cultureQueue[i].front()->neighbors[j]].hasCulture = true;
-							cells[cultureQueue[i].front()->neighbors[j]].culture = cultureQueue[i].front()->culture;
-							cultureQueue[i].push(&cells[cultureQueue[i].front()->neighbors[j]]);
+							cells->at(cultureQueue[i].front()->neighbors[j]).hasCulture = true;
+							cells->at(cultureQueue[i].front()->neighbors[j]).culture = cultureQueue[i].front()->culture;
+							cultureQueue[i].push(&cells->at(cultureQueue[i].front()->neighbors[j]));
 						}
 					}
 					cultureQueue[i].pop();
@@ -303,9 +307,12 @@ namespace Mer
 				}
 			}
 		}
+
+		return cultures;
 	}
-	void WorldGenerator::GenerateReligions(int numOfReligions)
+	std::vector<Religion> WorldGenerator::GenerateReligions(int numOfReligions, std::vector<Cell>* cells)
 	{
+		std::vector<Religion> religions;
 		std::vector<std::queue<Cell*>> religionQueue;
 
 		int cellCount = 0;
@@ -317,21 +324,22 @@ namespace Mer
 		for (int i = 0; i < numOfReligions; i++)
 		{
 			std::queue<Cell*> temp;
-			int randIndex = rand() % cells.size();
-			while (cells[randIndex].type == "ocean")
+
+			int randIndex = rand() % cells->size();
+			while (cells->at(randIndex).type == "ocean")
 			{
-				randIndex = rand() % cells.size();
+				randIndex = rand() % cells->size();
 			}
-			temp.push(&cells[randIndex]);
+			temp.push(&cells->at(randIndex));
 			temp.front()->religion = i;
 
 			temp.front()->hasReligion = true;
 			religionQueue.push_back(temp);
 			Religion tempRel;
 			tempRel.id = i;
-			tempRel.color[0] = colorDis(colorEngine);
-			tempRel.color[1] = colorDis(colorEngine);
-			tempRel.color[2] = colorDis(colorEngine);
+			tempRel.colour[0] = colorDis(colorEngine);
+			tempRel.colour[1] = colorDis(colorEngine);
+			tempRel.colour[2] = colorDis(colorEngine);
 			religions.push_back(tempRel);
 			cellCount++;
 		}
@@ -343,11 +351,12 @@ namespace Mer
 				{
 					for (int j = 0; j < religionQueue[i].front()->neighbors.size(); j++)
 					{
-						if (!cells[religionQueue[i].front()->neighbors[j]].hasReligion && cells[religionQueue[i].front()->neighbors[j]].type == "land")
+
+						if (!cells->at(religionQueue[i].front()->neighbors[j]).hasReligion && cells->at(religionQueue[i].front()->neighbors[j]).type == "land")
 						{
-							cells[religionQueue[i].front()->neighbors[j]].hasReligion = true;
-							cells[religionQueue[i].front()->neighbors[j]].religion = religionQueue[i].front()->religion;
-							religionQueue[i].push(&cells[religionQueue[i].front()->neighbors[j]]);
+							cells->at(religionQueue[i].front()->neighbors[j]).hasReligion = true;
+							cells->at(religionQueue[i].front()->neighbors[j]).religion = religionQueue[i].front()->religion;
+							religionQueue[i].push(&cells->at(religionQueue[i].front()->neighbors[j]));
 						}
 					}
 					religionQueue[i].pop();
@@ -356,98 +365,8 @@ namespace Mer
 				{
 					religionQueue.erase(religionQueue.begin() + i);
 				}
-			}
-		}
-	}
-	int WorldGenerator::getNationCount()
-	{
-		return nations.size();
-	}
-	float WorldGenerator::getNationRed(int id)
-	{
-		return nations[id].color[0];
-	}
-	float WorldGenerator::getNationGreen(int id)
-	{
-		return nations[id].color[1];
-	}
-	float WorldGenerator::getNationBlue(int id)
-	{
-		return nations[id].color[2];
-	}
 
-	int WorldGenerator::getCultureCount()
-	{
-		return cultures.size();
-	}
-	float WorldGenerator::getCultureRed(int id)
-	{
-		return cultures[id].color[0];
-	}
-	float WorldGenerator::getCultureGreen(int id)
-	{
-		return cultures[id].color[1];
-	}
-	float WorldGenerator::getCultureBlue(int id)
-	{
-		return cultures[id].color[2];
-	}
-
-	int WorldGenerator::getReligionCount()
-	{
-		return religions.size();
-	}
-	float WorldGenerator::getReligionRed(int id)
-	{
-		return religions[id].color[0];
-	}
-	float WorldGenerator::getReligionGreen(int id)
-	{
-		return religions[id].color[1];
-	}
-	float WorldGenerator::getReligionBlue(int id)
-	{
-		return religions[id].color[2];
-	}
-	Cell* WorldGenerator::getCellAtCoords(double xpos, double ypos)
-	{
-		float height = 0;
-
-		for (int i = 0; i < cells.size(); i++)
-		{
-			int counter = 0;
-			for (int j = 0, k = cells[i].coords.size() - 1; j < cells[i].coords.size(); k = j++)
-			{
-				if (Intersects(xpos, ypos, cells[i].coords[j].x, cells[i].coords[j].y, cells[i].coords[k].x, cells[i].coords[k].y))
-				{
-					counter++;
-				}
 			}
-			if (counter % 2 != 0)
-			{
-				return &cells[i];
-			}
-		}
-
-		return nullptr;
-		
-	}
-	bool WorldGenerator::Intersects(double mouseX, double mouseY, double edgeX1, double edgeY1, double edgeX2, double edgeY2)
-	{
-		if ((mouseY <= edgeY1) != (mouseY <= edgeY2))
-		{
-			if (mouseX <= (edgeX2 - edgeX1) * (mouseY - edgeY1) / (edgeY2 - edgeY1) + edgeX1)
-			{
-				return true;
-			}
-			else
-			{
-				return false;
-			}
-		}
-		else
-		{
-			return false;
 		}
 	}
 }

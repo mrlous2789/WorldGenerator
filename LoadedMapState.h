@@ -1,7 +1,9 @@
 #pragma once
 #include "State.h"
 #include "Program.h"
-#include "Reader.h"
+#include "WorldManager.h"
+
+
 
 namespace Mer
 {
@@ -31,10 +33,9 @@ namespace Mer
 		GLuint program;
 		GLuint program2;
 
-		Reader reader;
+		WorldManager wm;
 
 		int activeCell = 0;
-		int cellCount = 5000;
 
 		char filename[128] = "testFile.geojson";
 

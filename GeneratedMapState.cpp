@@ -16,7 +16,7 @@ namespace Mer
 
 		//io.Fonts->AddFontFromFileTTF("Fonts/Atteron.ttf", 18.0f, NULL, NULL);
 
-		wg.Generate(cellCount,numOfHighIslands,numOfLowIslands,numOfNations, numOfCultures, numOfReligions);
+		wm.Generate(cellCount,numOfHighIslands,numOfLowIslands,numOfNations, numOfCultures, numOfReligions);
 
 
 
@@ -27,14 +27,14 @@ namespace Mer
 		glPointSize(1.0f);
 		
 
-		for (int i = 0; i < wg.cells.size(); i++)
+		for (int i = 0; i < wm.cells.size(); i++)
 		{
 			glBindBuffer(GL_ARRAY_BUFFER, Buffers[i]);
-			glBufferData(GL_ARRAY_BUFFER, wg.cells[i].coords.size() * sizeof(glm::vec3), &wg.cells[i].coords.front(), GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, wm.cells[i].coords.size() * sizeof(glm::vec3), &wm.cells[i].coords.front(), GL_STATIC_DRAW);
 			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
 			glBindBuffer(GL_ARRAY_BUFFER, borderBuffers[i]);
-			glBufferData(GL_ARRAY_BUFFER, wg.cells[i].coords.size() * sizeof(glm::vec3), &wg.cells[i].coords.front(), GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, wm.cells[i].coords.size() * sizeof(glm::vec3), &wm.cells[i].coords.front(), GL_STATIC_DRAW);
 			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 		}
 		
@@ -52,6 +52,8 @@ namespace Mer
 		};
 		cellsShader = LoadShaders(shaders);
 		borderShader = LoadShaders(borderShaders);
+
+		selectedCell = &wm.cells[0];
 
 		glUseProgram(cellsShader);
 
@@ -77,8 +79,6 @@ namespace Mer
 		glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, glm::value_ptr(mvp));
 
 
-		selectedCell = &wg.cells[0];
-
 		glfwGetWindowSize(_data->window, &windowW, &windowH);
 	}
 	void GeneratedMapState::HandleInput()
@@ -89,15 +89,15 @@ namespace Mer
 	{
 		if (generateNew)
 		{
-			wg.Generate(cellCount, numOfHighIslands, numOfLowIslands, numOfNations, numOfCultures, numOfReligions);
-			for (int i = 0; i < wg.cells.size(); i++)
+			wm.Generate(cellCount, numOfHighIslands, numOfLowIslands, numOfNations, numOfCultures, numOfReligions);
+			for (int i = 0; i < wm.cells.size(); i++)
 			{
 				glBindBuffer(GL_ARRAY_BUFFER, Buffers[i]);
-				glBufferData(GL_ARRAY_BUFFER, wg.cells[i].coords.size() * sizeof(glm::vec3), &wg.cells[i].coords.front(), GL_STATIC_DRAW);
+				glBufferData(GL_ARRAY_BUFFER, wm.cells[i].coords.size() * sizeof(glm::vec3), &wm.cells[i].coords.front(), GL_STATIC_DRAW);
 				glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
 				glBindBuffer(GL_ARRAY_BUFFER, borderBuffers[i]);
-				glBufferData(GL_ARRAY_BUFFER, wg.cells[i].coords.size() * sizeof(glm::vec3), &wg.cells[i].coords.front(), GL_STATIC_DRAW);
+				glBufferData(GL_ARRAY_BUFFER, wm.cells[i].coords.size() * sizeof(glm::vec3), &wm.cells[i].coords.front(), GL_STATIC_DRAW);
 				glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 			}
 			generateNew = false;
@@ -122,7 +122,9 @@ namespace Mer
 				ypos -= (windowH / 2);
 				ypos = ypos / (windowH / 2);
 				ypos *= -1;
-				selectedCell = wg.getCellAtCoords(xpos, ypos);
+
+				selectedCell = wm.getCellAtCoords(xpos, ypos);
+
 			}
 		}
 
@@ -139,87 +141,91 @@ namespace Mer
 		glEnableVertexAttribArray(1);
 
 
-		for (int i = 0; i < wg.cells.size(); i++)
+		for (int i = 0; i < wm.cells.size(); i++)
 		{
 			if (mapmode == 1)
 			{
-				if (wg.cells[i].state != -1)
-				{
-					color[0] = wg.getNationRed(wg.cells[i].state);
-					color[1] = wg.getNationGreen(wg.cells[i].state);
-					color[2] = wg.getNationBlue(wg.cells[i].state);
-				}
-				else
+				Nation nat = wm.getNationById(wm.cells[i].state);
+				if (nat.id == -1)
 				{
 					color[0] = 0.0f;
 					color[1] = 0.0f;
 					color[2] = 1.0f;
+				}
+				else
+				{
+					color[0] = wm.getNationById(wm.cells[i].state).colour[0];
+					color[1] = wm.getNationById(wm.cells[i].state).colour[1];
+					color[2] = wm.getNationById(wm.cells[i].state).colour[2];
 				}
 
 			}
 			else if (mapmode == 2)
 			{
-				if (wg.cells[i].culture != -1)
-				{
-					color[0] = wg.getCultureRed(wg.cells[i].culture);
-					color[1] = wg.getCultureGreen(wg.cells[i].culture);
-					color[2] = wg.getCultureBlue(wg.cells[i].culture);
-				}
-				else
+				Culture cult = wm.getCultureById(wm.cells[i].culture);
+				if (cult.id == -1)
 				{
 					color[0] = 0.0f;
 					color[1] = 0.0f;
 					color[2] = 1.0f;
 				}
+				else
+				{
+					color[0] = cult.colour[0];
+					color[1] = cult.colour[1];
+					color[2] = cult.colour[2];
+				}
+
 			}
 			else if (mapmode == 3)
 			{
-				if (wg.cells[i].religion != -1)
-				{
-					color[0] = wg.getReligionRed(wg.cells[i].religion);
-					color[1] = wg.getReligionGreen(wg.cells[i].religion);
-					color[2] = wg.getReligionBlue(wg.cells[i].religion);
-				}
-				else
+				Religion rel = wm.getReligionById(wm.cells[i].religion);
+				if (rel.id == -1)
 				{
 					color[0] = 0.0f;
 					color[1] = 0.0f;
 					color[2] = 1.0f;
+				}
+				else
+				{
+					color[0] = rel.colour[0];
+					color[1] = rel.colour[1];
+					color[2] = rel.colour[2];
 				}
 			}
 			else
 			{
-				if (wg.cells[i].id == selectedCell->id && selectedCell != nullptr)
+				if (wm.cells[i].id == selectedCell->id && selectedCell != nullptr)
 				{
 					color[0] = 1.0f;
 					color[1] = 1.0f;
 					color[2] = 0.0f;
 				}
-				else if (wg.cells[i].height > 8000)
+				else if (wm.cells[i].height > 8000)
 				{
 					color[0] = 1.0f;
 					color[1] = 0.0f;
 					color[2] = 0.0f;
 				}
-				else if (wg.cells[i].height > 6000)
+				else if (wm.cells[i].height > 6000)
 				{
 					color[0] = 1.0f;
 					color[1] = 0.18f;
 					color[2] = 0.18f;
 				}
-				else if (wg.cells[i].height > 3000)
+				else if (wm.cells[i].height > 3000)
 				{
 					color[0] = 1.0f;
 					color[1] = 0.4f;
 					color[2] = 0.4f;
 				}
-				else if (wg.cells[i].height > 1000)
+				else if (wm.cells[i].height > 1000)
 				{
 					color[0] = 1.0f;
 					color[1] = 0.7f;
 					color[2] = 0.7f;
 				}
-				else if (wg.cells[i].height > 0)
+				else if (wm.cells[i].height > 0)
 				{
 					color[0] = 0.0f;
 					color[1] = 1.0f;
@@ -242,10 +248,10 @@ namespace Mer
 			glBindBuffer(GL_ARRAY_BUFFER, Buffers[i]);
 			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
-			glDrawArrays(GL_TRIANGLE_FAN, 0, wg.cells[i].coords.size());
+			glDrawArrays(GL_TRIANGLE_FAN, 0, wm.cells[i].coords.size());
 
 
-			if (showCellBorders && wg.cells[i].height > 0)
+			if (showCellBorders && wm.cells[i].height > 0)
 			{
 				color[0] = 0.0f;
 				color[1] = 0.0f;
@@ -256,10 +262,11 @@ namespace Mer
 
 				glBindBuffer(GL_ARRAY_BUFFER, borderBuffers[i]);
 				glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+				glDrawArrays(GL_LINE_LOOP, 0, wm.cells[i].coords.size());
 			}
 
 
-			glDrawArrays(GL_LINE_LOOP, 0, wg.cells[i].coords.size());
+
 		}
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);

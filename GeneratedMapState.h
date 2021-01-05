@@ -1,7 +1,7 @@
 #pragma once
 #include "State.h"
 #include "Program.h"
-#include "WorldGenerator.h"
+#include "WorldManager.h"
 #include <string>
 
 namespace Mer
@@ -17,7 +17,7 @@ namespace Mer
 		void CleanUp();
 	private:
 		ProgramDataReF _data;
-		WorldGenerator wg;
+		WorldManager wm;
 
 		enum VAO_IDs { Cells, Borders, Colours, Tex, NumVAOs = 2 };
 		enum Buffer_IDs { ArrayBuffer, NumBuffers = 12000 };
