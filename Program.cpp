@@ -32,7 +32,7 @@ namespace Mer
 	{
 		glfwInit();
 
-		_data->window = glfwCreateWindow(1920, 1080, "Project", NULL, NULL);
+		_data->window = glfwCreateWindow(1366, 768, "Project", NULL, NULL);
 		glfwMakeContextCurrent(_data->window);
 		glewInit();
 

@@ -4,6 +4,8 @@
 #include "WorldManager.h"
 #include <string>
 
+
+
 namespace Mer
 {
 	class GeneratedMapState : public State
@@ -15,6 +17,8 @@ namespace Mer
 		void Update();
 		void Draw();
 		void CleanUp();
+
+
 	private:
 		ProgramDataReF _data;
 		WorldManager wm;
@@ -58,7 +62,25 @@ namespace Mer
 		glm::mat4 projection;
 		glm::mat4 mvp;
 
+		float zoomLevel = 1.0f;
+		float zoomRate = 0.05f;
+		float minZoom = 1.0f;
+		float maxZoom = 2.0f;
 
+		static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+		static void char_callback(GLFWwindow* window, unsigned int key);
+		static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+
+		static bool isZoomOut;
+		static bool isZoomIn;
+
+
+
+		char filename[128] = "testFile.geojson";
+
+		void ZoomOut();
+		void ZoomIn();
+		
 		GLfloat color[3] = { 0.0f,0.0f,1.0f };
 	};
 }

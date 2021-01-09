@@ -154,6 +154,7 @@
     <ClInclude Include="Culture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="media\textures\awesomeface.png" />
@@ -189,5 +190,8 @@
     <Filter Include="MyGAL">
       <UniqueIdentifier>{4b24afc3-4e6f-4b54-885e-3c87d9bdd8b3}</UniqueIdentifier>
     </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Coursework2.rc" />
   </ItemGroup>
 </Project>

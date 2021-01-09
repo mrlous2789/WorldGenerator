@@ -1,9 +1,32 @@
 #include "GeneratedMapState.h"
 namespace Mer
 {
+	bool GeneratedMapState::isZoomIn = false;
+	bool GeneratedMapState::isZoomOut = false;
 	GeneratedMapState::GeneratedMapState(ProgramDataReF data) : _data(data)
 	{
-
+	}
+	void GeneratedMapState::scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+	{
+		if (yoffset < 0)
+		{
+			isZoomOut = true;
+		}
+		else if (yoffset > 0)
+		{
+			isZoomIn = true;
+		}
+	}
+	void GeneratedMapState::char_callback(GLFWwindow* window, unsigned int key)
+	{
+		if (ImGui::GetIO().WantCaptureKeyboard)
+		{
+			ImGui::GetIO().AddInputCharacter(key);
+		}		
+	}
+	void GeneratedMapState::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+	{
+		std::cout << key << std::endl;
 	}
 	void GeneratedMapState::Init()
 	{
@@ -59,7 +82,7 @@ namespace Mer
 
 		// creating the model matrix
 		model = glm::mat4(1.0f);
-		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		model = glm::scale(model, glm::vec3(zoomLevel, zoomLevel, 1.0f));
 		model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1.0f, 1.0f, 0.0f));
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
 
@@ -68,7 +91,7 @@ namespace Mer
 		view = glm::translate(view, glm::vec3(0.0f, 0.0f, 0.0f));
 
 		// creating the projection matrix
-		projection = glm::perspective(90.0f, 1.0f, 0.1f, 20.0f);
+		projection = glm::perspective(89.535f, 1.0f, 0.1f, 20.0f);
 
 		// Adding all matrices up to create combined matrix
 		mvp = model * view * projection;
@@ -78,15 +101,41 @@ namespace Mer
 		int mvpLoc = glGetUniformLocation(cellsShader, "mvp");
 		glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, glm::value_ptr(mvp));
 
-
+		glfwSetScrollCallback(_data->window, scroll_callback);
+		glfwSetCharCallback(_data->window, char_callback);
+		//glfwSetKeyCallback(_data->window, key_callback);
 		glfwGetWindowSize(_data->window, &windowW, &windowH);
 	}
 	void GeneratedMapState::HandleInput()
 	{
+		if (ImGui::GetIO().WantCaptureMouse)
+		{
+			if (glfwGetKey(_data->window, GLFW_KEY_LEFT_CONTROL) == 1)
+			{
+				ImGui::GetIO().KeyCtrl = true;
+			}
+			else
+			{
+				ImGui::GetIO().KeyCtrl = false;
+			}
+		}
+		else
+		{
+
+		}
 
 	}
 	void GeneratedMapState::Update()
 	{
+		if (isZoomIn)
+		{
+			ZoomIn();
+		}
+		if (isZoomOut)
+		{
+			ZoomOut();
+		}
+
 		if (generateNew)
 		{
 			wm.Generate(cellCount, numOfHighIslands, numOfLowIslands, numOfNations, numOfCultures, numOfReligions);
@@ -115,7 +164,7 @@ namespace Mer
 			{
 
 			}
-			else if (xpos >= 0 && xpos <= windowW && ypos >= 0 && ypos <= windowH)
+			else if (xpos > 0 && xpos <= windowW && ypos >= 0 && ypos <= windowH)
 			{
 				xpos -= (windowW / 2);
 				xpos = xpos / (windowW / 2);
@@ -123,11 +172,13 @@ namespace Mer
 				ypos = ypos / (windowH / 2);
 				ypos *= -1;
 
+				xpos /= zoomLevel;
+				ypos /= zoomLevel;
+
 				selectedCell = wm.getCellAtCoords(xpos, ypos);
 
 			}
 		}
-
 		glfwPollEvents();
 	}
 	void GeneratedMapState::Draw()
@@ -324,6 +375,8 @@ namespace Mer
 
 		ImGui::Text("Type: "); ImGui::SameLine();
 		ImGui::Text(selectedCell->type.c_str());
+
+		ImGui::InputText("Filename: ", filename, ARRAYSIZE(filename));
 		
 		ImGui::ShowDemoWindow();
 
@@ -336,6 +389,67 @@ namespace Mer
 	void GeneratedMapState::CleanUp()
 	{
 		glDeleteBuffers(NumBuffers, Buffers);
-		glDeleteVertexArrays(NumBuffers, VAOs);
+		glDeleteVertexArrays(NumVAOs, VAOs);
+	}
+
+	void GeneratedMapState::ZoomIn()
+	{
+		if (zoomLevel < maxZoom)
+		{
+			zoomLevel += zoomRate;
+
+			// creating the model matrix
+			model = glm::mat4(1.0f);
+			model = glm::scale(model, glm::vec3(zoomLevel, zoomLevel, 1.0f));
+			model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1.0f, 1.0f, 0.0f));
+			model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+
+			// creating the view matrix
+			view = glm::mat4(1.0f);
+			view = glm::translate(view, glm::vec3(0.0f, 0.0f, 0.0f));
+
+			// creating the projection matrix
+			projection = glm::perspective(89.535f, 1.0f, 0.1f, 20.0f);
+
+			// Adding all matrices up to create combined matrix
+			mvp = model * view * projection;
+
+			isZoomIn = false;
+			std::cout << zoomLevel << std::endl;
+		}
+		else
+		{
+			std::cout << zoomLevel << std::endl;
+			isZoomIn = false;
+		}
+
+	}
+	void GeneratedMapState::ZoomOut()
+	{
+		if (zoomLevel > minZoom)
+		{
+			zoomLevel -= zoomRate;
+			// creating the model matrix
+			model = glm::mat4(1.0f);
+			model = glm::scale(model, glm::vec3(zoomLevel, zoomLevel, 1.0f));
+			model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1.0f, 1.0f, 0.0f));
+			model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+
+			// creating the view matrix
+			view = glm::mat4(1.0f);
+			view = glm::translate(view, glm::vec3(0.0f, 0.0f, 0.0f));
+
+			// creating the projection matrix
+			projection = glm::perspective(89.535f, 1.0f, 0.1f, 20.0f);
+
+			// Adding all matrices up to create combined matrix
+			mvp = model * view * projection;
+
+			isZoomOut = false;
+		}
+		else
+		{
+			isZoomOut = false;
+		}
 	}
 }
