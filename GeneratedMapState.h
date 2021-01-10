@@ -65,7 +65,7 @@ namespace Mer
 		float zoomLevel = 1.0f;
 		float zoomRate = 0.05f;
 		float minZoom = 1.0f;
-		float maxZoom = 2.0f;
+		float maxZoom = 3.0f;
 
 		static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 		static void char_callback(GLFWwindow* window, unsigned int key);

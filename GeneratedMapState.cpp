@@ -88,7 +88,7 @@ namespace Mer
 
 		// creating the view matrix
 		view = glm::mat4(1.0f);
-		view = glm::translate(view, glm::vec3(0.0f, 0.0f, 0.0f));
+		view = glm::translate(view, glm::vec3(0.5f, 0.5f, 0.0f));
 
 		// creating the projection matrix
 		projection = glm::perspective(89.535f, 1.0f, 0.1f, 20.0f);
@@ -400,9 +400,9 @@ namespace Mer
 
 			// creating the model matrix
 			model = glm::mat4(1.0f);
-			model = glm::scale(model, glm::vec3(zoomLevel, zoomLevel, 1.0f));
+			model = glm::translate(model, glm::vec3(1.0f, 1.0f, 0.0f));
 			model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1.0f, 1.0f, 0.0f));
-			model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+			model = glm::scale(model, glm::vec3(zoomLevel, zoomLevel, 1.0f));
 
 			// creating the view matrix
 			view = glm::mat4(1.0f);
@@ -437,7 +437,7 @@ namespace Mer
 
 			// creating the view matrix
 			view = glm::mat4(1.0f);
-			view = glm::translate(view, glm::vec3(0.0f, 0.0f, 0.0f));
+			view = glm::translate(view, glm::vec3(0.5f, 0.5f, 0.0f));
 
 			// creating the projection matrix
 			projection = glm::perspective(89.535f, 1.0f, 0.1f, 20.0f);
