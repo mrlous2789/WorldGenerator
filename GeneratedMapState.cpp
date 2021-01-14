@@ -346,17 +346,17 @@ namespace Mer
 			color[1] = 0.0f;
 			color[2] = 0.0f;
 
-			myLoc = glGetUniformLocation(cellsShader, "color");
-			glProgramUniform3fv(cellsShader, myLoc, 1, color);
 
-			glBindBuffer(GL_ARRAY_BUFFER, borderBuffers[i]);
-			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-			glDrawArrays(GL_LINE_LOOP, 0, wm.cells[i].coords.size());
 
-			//if (showCellBorders && wm.cells[i].height > 0)
-			//{
+			if (showCellBorders && wm.cells[i].height > 0)
+			{
+				myLoc = glGetUniformLocation(cellsShader, "color");
+				glProgramUniform3fv(cellsShader, myLoc, 1, color);
 
-			//}
+				glBindBuffer(GL_ARRAY_BUFFER, borderBuffers[i]);
+				glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+				glDrawArrays(GL_LINE_LOOP, 0, wm.cells[i].coords.size());
+			}
 
 
 
@@ -368,6 +368,7 @@ namespace Mer
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
+		ImGui::Begin("Map modes");//map modes imgui window
 		if (ImGui::Button("Land"))
 		{
 			mapmode = 0;
@@ -384,29 +385,33 @@ namespace Mer
 		{
 			mapmode = 3;
 		}
-		if (ImGui::Button("New Map") && !generateNew)
-		{
-			generateNew = true;
-		}
 		if (ImGui::Button("Show Borders") && !generateNew)
 		{
 			showCellBorders = !showCellBorders;
 		}
-		
+		ImGui::End();//end of map modes imgui window
+		ImGui::Begin("Settings");//settings imgui window
 		ImGui::SliderInt("Number of Cells", &cellCount, 3000, 12000, "%d", ImGuiSliderFlags_AlwaysClamp);
 		ImGui::SliderInt("Number of High Islands", &numOfHighIslands, 1, 3, "%d", ImGuiSliderFlags_AlwaysClamp);
 		ImGui::SliderInt("Number of Low Islands", &numOfLowIslands, 1, 30, "%d", ImGuiSliderFlags_AlwaysClamp);
 		ImGui::SliderInt("Number of Nations", &numOfNations, 3, 25, "%d", ImGuiSliderFlags_AlwaysClamp);
 		ImGui::SliderInt("Number of Cultures", &numOfCultures, 3, 25, "%d", ImGuiSliderFlags_AlwaysClamp);
 		ImGui::SliderInt("Number of Religions", &numOfReligions, 3, 25, "%d", ImGuiSliderFlags_AlwaysClamp);
+		if (ImGui::Button("New Map") && !generateNew)
+			generateNew = true;
 
-		ImGui::Text("Id: ");ImGui::SameLine();
+		ImGui::InputText("Filename: ", filename, ARRAYSIZE(filename));
+		ImGui::End();//end of settings imgui window
+
+		ImGui::Begin("Selected cell"); //Seleted cell imgui window
+
+		ImGui::Text("Id: "); ImGui::SameLine();
 		ImGui::Text(std::to_string(selectedCell->id).c_str());
 
-		ImGui::Text("Height: ");ImGui::SameLine();
+		ImGui::Text("Height: "); ImGui::SameLine();
 		ImGui::Text(std::to_string(selectedCell->height).c_str());
 
-		ImGui::Text("State: ");ImGui::SameLine();
+		ImGui::Text("State: "); ImGui::SameLine();
 		ImGui::Text(std::to_string(selectedCell->state).c_str());
 
 		ImGui::Text("Culture: "); ImGui::SameLine();
@@ -418,13 +423,60 @@ namespace Mer
 		ImGui::Text("Type: "); ImGui::SameLine();
 		ImGui::Text(selectedCell->type.c_str());
 
-		ImGui::InputText("Filename: ", filename, ARRAYSIZE(filename));
-		
-		ImGui::ShowDemoWindow();
+		ImGui::End();//end of selected cell imgui window
 
+		ImGui::Begin("Edit menu");//edit menu imgui window
+		if (ImGui::Button("Edit nations"))
+		{
+			editStates = true;
+			editCultures = false;
+			editReligions = false;
+		}
+		if (ImGui::Button("Edit cultures"))
+		{
+			editStates = false;
+			editCultures = true;
+			editReligions = false;
+		}
+		if (ImGui::Button("Edit religions"))
+		{
+			editStates = false;
+			editCultures = false;
+			editReligions = true;
+		}
+		ImGui::End();//end of edit menu imgui window
+
+		if (editStates)
+		{
+			ImGui::Begin("States edit"); //state edit imgui window
+			static int selected = -1;
+			for (int j = 0; j < wm.nations.size(); j++)
+			{
+				char name[32];
+				sprintf_s(name, "Nation %d", j);
+				if (ImGui::Selectable(name,selected == j))
+				{
+					selected = j;
+				}
+			}
+			ImGui::End();//state edit imgui window
+		}
+		if (editCultures)
+		{
+			ImGui::Begin("Cultures edit"); //cultures edit imgui window
+			ImGui::End();//cultures edit imgui window
+		}
+		if (editReligions)
+		{
+			ImGui::Begin("Religions edit"); //religions edit imgui window
+			ImGui::End();//religions edit imgui window
+		}
+
+		ImGui::ShowDemoWindow();
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
+		
 
 		glfwSwapBuffers(_data->window);
 	}
@@ -446,7 +498,6 @@ namespace Mer
 		}
 		else
 		{
-			std::cout << zoomLevel << std::endl;
 			isZoomIn = false;
 		}
 
@@ -504,8 +555,6 @@ namespace Mer
 		if ((yoffset + (1.0f/ zoomLevel)) < 0.99f)
 		{
 			yoffset += moveSpeed;
-
-			std::cout << yoffset << std::endl;
 
 			moved = true;
 

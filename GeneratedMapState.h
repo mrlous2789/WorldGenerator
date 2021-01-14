@@ -83,6 +83,12 @@ namespace Mer
 		bool isMoveRight = false;
 		bool isMoveLeft = false;
 
+		bool editStates = false;
+		bool editCultures = false;
+		bool editReligions = false;
+
+		std::vector<bool>selectedNations;
+
 		bool moved = false;
 
 		char filename[128] = "testFile.geojson";
