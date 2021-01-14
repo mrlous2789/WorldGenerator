@@ -155,6 +155,7 @@ namespace Mer
 
 		if (moved)
 		{
+
 			// creating the model matrix
 			model = glm::mat4(1.0f);
 			model = glm::scale(model, glm::vec3(zoomLevel, zoomLevel, 1.0f));
@@ -210,6 +211,9 @@ namespace Mer
 
 				xpos /= zoomLevel;
 				ypos /= zoomLevel;
+
+				xpos -= xoffset;
+				ypos -= yoffset;
 
 				selectedCell = wm.getCellAtCoords(xpos, ypos);
 
@@ -432,21 +436,13 @@ namespace Mer
 
 	void GeneratedMapState::ZoomIn()
 	{
-		if (zoomLevel < maxZoom)
+		if (zoomLevel + zoomRate < maxZoom)
 		{
 			zoomLevel += zoomRate;
 
-			// creating the model matrix
-			model = glm::mat4(1.0f);
-			model = glm::scale(model, glm::vec3(zoomLevel, zoomLevel, 1.0f));
-			model = glm::translate(model, glm::vec3(xoffset, yoffset, 0.0f));
-			model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1.0f, 1.0f, 0.0f));
-
-			// Adding all matrices up to create combined matrix
-			mvp = projection * view * model;
+			moved = true;
 
 			isZoomIn = false;
-			std::cout << zoomLevel << std::endl;
 		}
 		else
 		{
@@ -457,20 +453,30 @@ namespace Mer
 	}
 	void GeneratedMapState::ZoomOut()
 	{
-		if (zoomLevel > minZoom)
+		if (zoomLevel - zoomRate > minZoom)
 		{
 			zoomLevel -= zoomRate;
-			// creating the model matrix
-			model = glm::mat4(1.0f);
-			model = glm::scale(model, glm::vec3(zoomLevel, zoomLevel, 1.0f));
-			model = glm::translate(model, glm::vec3(xoffset, yoffset, 0.0f));
-			model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1.0f, 1.0f, 0.0f));
 
-
-			// Adding all matrices up to create combined matrix
-			mvp = projection * view * model;
+			moved = true;
 
 			isZoomOut = false;
+
+			if ((yoffset - (1.0f / zoomLevel)) < -0.99f)
+			{
+				yoffset = -0.99f + (1.0f / zoomLevel);
+			}
+			else if ((yoffset + (1.0f / zoomLevel)) > 0.99f)
+			{
+				yoffset = 0.99f - (1.0f / zoomLevel);
+			}
+			if ((xoffset + (1.0f / zoomLevel)) > 0.99f)
+			{
+				xoffset = 0.99f - (1.0f / zoomLevel);
+			}
+			else if ((xoffset - (1.0f / zoomLevel)) < -0.99f)
+			{
+				xoffset = -0.99f + (1.0f / zoomLevel);
+			}
 		}
 		else
 		{
@@ -480,7 +486,7 @@ namespace Mer
 	
 	void GeneratedMapState::MoveUp()
 	{
-		if (yoffset > -0.5f)
+		if ((yoffset - (1.0f / zoomLevel)) > -0.99f)
 		{
 			yoffset -= moveSpeed;
 			
@@ -495,9 +501,11 @@ namespace Mer
 	}
 	void GeneratedMapState::MoveDown()
 	{
-		if (yoffset < 0.5f)
+		if ((yoffset + (1.0f/ zoomLevel)) < 0.99f)
 		{
 			yoffset += moveSpeed;
+
+			std::cout << yoffset << std::endl;
 
 			moved = true;
 
@@ -511,7 +519,7 @@ namespace Mer
 	}
 	void GeneratedMapState::MoveLeft()
 	{
-		if (xoffset < 0.5f)
+		if ((xoffset + (1.0f / zoomLevel)) < 0.99f)
 		{
 			xoffset += moveSpeed;
 
@@ -527,7 +535,7 @@ namespace Mer
 	}
 	void GeneratedMapState::MoveRight()
 	{
-		if (xoffset > -0.5f)
+		if ((xoffset - (1.0f / zoomLevel)) > -0.99f)
 		{
 			xoffset -= moveSpeed;
 

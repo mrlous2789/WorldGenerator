@@ -62,7 +62,7 @@ namespace Mer
 		glm::mat4 projection;
 		glm::mat4 mvp;
 
-		float zoomLevel = 3.0f;
+		float zoomLevel = 1.0f;
 		float zoomRate = 0.05f;
 		float minZoom = 1.0f;
 		float maxZoom = 3.0f;
