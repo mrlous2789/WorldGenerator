@@ -62,7 +62,7 @@ namespace Mer
 		glm::mat4 projection;
 		glm::mat4 mvp;
 
-		float zoomLevel = 1.0f;
+		float zoomLevel = 3.0f;
 		float zoomRate = 0.05f;
 		float minZoom = 1.0f;
 		float maxZoom = 3.0f;
@@ -74,12 +74,26 @@ namespace Mer
 		static bool isZoomOut;
 		static bool isZoomIn;
 
+		float xoffset = 0.0f;
+		float yoffset = 0.0f;
+		float moveSpeed = 0.01f;
 
+		bool isMoveUp = false;
+		bool isMoveDown = false;
+		bool isMoveRight = false;
+		bool isMoveLeft = false;
+
+		bool moved = false;
 
 		char filename[128] = "testFile.geojson";
 
 		void ZoomOut();
 		void ZoomIn();
+
+		void MoveUp();
+		void MoveDown();
+		void MoveLeft();
+		void MoveRight();
 		
 		GLfloat color[3] = { 0.0f,0.0f,1.0f };
 	};

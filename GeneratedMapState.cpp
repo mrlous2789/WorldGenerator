@@ -83,18 +83,19 @@ namespace Mer
 		// creating the model matrix
 		model = glm::mat4(1.0f);
 		model = glm::scale(model, glm::vec3(zoomLevel, zoomLevel, 1.0f));
+		model = glm::translate(model, glm::vec3(xoffset, yoffset, 0.0f));
 		model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1.0f, 1.0f, 0.0f));
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+
 
 		// creating the view matrix
 		view = glm::mat4(1.0f);
-		view = glm::translate(view, glm::vec3(0.5f, 0.5f, 0.0f));
+		view = glm::translate(view, glm::vec3(0.0f, 0.0f, 0.0f));
 
 		// creating the projection matrix
 		projection = glm::perspective(89.535f, 1.0f, 0.1f, 20.0f);
 
 		// Adding all matrices up to create combined matrix
-		mvp = model * view * projection;
+		mvp = projection * view * model;
 
 
 		//adding the Uniform to the shader
@@ -119,6 +120,18 @@ namespace Mer
 				ImGui::GetIO().KeyCtrl = false;
 			}
 		}
+
+		if (!ImGui::GetIO().WantCaptureKeyboard)
+		{
+			if (glfwGetKey(_data->window, GLFW_KEY_W) == 1)
+				isMoveUp = true;
+			if (glfwGetKey(_data->window, GLFW_KEY_S) == 1)
+				isMoveDown = true;
+			if (glfwGetKey(_data->window, GLFW_KEY_A) == 1)
+				isMoveLeft = true;
+			if (glfwGetKey(_data->window, GLFW_KEY_D) == 1)
+				isMoveRight = true;
+		}
 		else
 		{
 
@@ -128,13 +141,34 @@ namespace Mer
 	void GeneratedMapState::Update()
 	{
 		if (isZoomIn)
-		{
 			ZoomIn();
-		}
 		if (isZoomOut)
-		{
 			ZoomOut();
+		if (isMoveUp)
+			MoveUp();
+		if (isMoveDown)
+			MoveDown();
+		if (isMoveLeft)
+			MoveLeft();
+		if (isMoveRight)
+			MoveRight();
+
+		if (moved)
+		{
+			// creating the model matrix
+			model = glm::mat4(1.0f);
+			model = glm::scale(model, glm::vec3(zoomLevel, zoomLevel, 1.0f));
+			model = glm::translate(model, glm::vec3(xoffset, yoffset, 0.0f));
+			model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1.0f, 1.0f, 0.0f));
+
+
+			// Adding all matrices up to create combined matrix
+			mvp = projection * view * model;
+
+			moved = false;
+
 		}
+
 
 		if (generateNew)
 		{
@@ -149,6 +183,8 @@ namespace Mer
 				glBufferData(GL_ARRAY_BUFFER, wm.cells[i].coords.size() * sizeof(glm::vec3), &wm.cells[i].coords.front(), GL_STATIC_DRAW);
 				glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 			}
+
+			selectedCell = &wm.cells[0];
 			generateNew = false;
 		}
 
@@ -302,19 +338,21 @@ namespace Mer
 			glDrawArrays(GL_TRIANGLE_FAN, 0, wm.cells[i].coords.size());
 
 
-			if (showCellBorders && wm.cells[i].height > 0)
-			{
-				color[0] = 0.0f;
-				color[1] = 0.0f;
-				color[2] = 0.0f;
+			color[0] = 0.0f;
+			color[1] = 0.0f;
+			color[2] = 0.0f;
 
-				myLoc = glGetUniformLocation(cellsShader, "color");
-				glProgramUniform3fv(cellsShader, myLoc, 1, color);
+			myLoc = glGetUniformLocation(cellsShader, "color");
+			glProgramUniform3fv(cellsShader, myLoc, 1, color);
 
-				glBindBuffer(GL_ARRAY_BUFFER, borderBuffers[i]);
-				glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-				glDrawArrays(GL_LINE_LOOP, 0, wm.cells[i].coords.size());
-			}
+			glBindBuffer(GL_ARRAY_BUFFER, borderBuffers[i]);
+			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+			glDrawArrays(GL_LINE_LOOP, 0, wm.cells[i].coords.size());
+
+			//if (showCellBorders && wm.cells[i].height > 0)
+			//{
+
+			//}
 
 
 
@@ -400,19 +438,12 @@ namespace Mer
 
 			// creating the model matrix
 			model = glm::mat4(1.0f);
-			model = glm::translate(model, glm::vec3(1.0f, 1.0f, 0.0f));
-			model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1.0f, 1.0f, 0.0f));
 			model = glm::scale(model, glm::vec3(zoomLevel, zoomLevel, 1.0f));
-
-			// creating the view matrix
-			view = glm::mat4(1.0f);
-			view = glm::translate(view, glm::vec3(0.0f, 0.0f, 0.0f));
-
-			// creating the projection matrix
-			projection = glm::perspective(89.535f, 1.0f, 0.1f, 20.0f);
+			model = glm::translate(model, glm::vec3(xoffset, yoffset, 0.0f));
+			model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1.0f, 1.0f, 0.0f));
 
 			// Adding all matrices up to create combined matrix
-			mvp = model * view * projection;
+			mvp = projection * view * model;
 
 			isZoomIn = false;
 			std::cout << zoomLevel << std::endl;
@@ -432,24 +463,81 @@ namespace Mer
 			// creating the model matrix
 			model = glm::mat4(1.0f);
 			model = glm::scale(model, glm::vec3(zoomLevel, zoomLevel, 1.0f));
+			model = glm::translate(model, glm::vec3(xoffset, yoffset, 0.0f));
 			model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1.0f, 1.0f, 0.0f));
-			model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
 
-			// creating the view matrix
-			view = glm::mat4(1.0f);
-			view = glm::translate(view, glm::vec3(0.5f, 0.5f, 0.0f));
-
-			// creating the projection matrix
-			projection = glm::perspective(89.535f, 1.0f, 0.1f, 20.0f);
 
 			// Adding all matrices up to create combined matrix
-			mvp = model * view * projection;
+			mvp = projection * view * model;
 
 			isZoomOut = false;
 		}
 		else
 		{
 			isZoomOut = false;
+		}
+	}
+	
+	void GeneratedMapState::MoveUp()
+	{
+		if (yoffset > -0.5f)
+		{
+			yoffset -= moveSpeed;
+			
+			moved = true;
+
+			isMoveUp = false;
+		}
+		else
+		{
+			isMoveUp = false;
+		}
+	}
+	void GeneratedMapState::MoveDown()
+	{
+		if (yoffset < 0.5f)
+		{
+			yoffset += moveSpeed;
+
+			moved = true;
+
+			isMoveDown = false;
+		}
+		else
+		{
+			isMoveDown = false;
+		}
+
+	}
+	void GeneratedMapState::MoveLeft()
+	{
+		if (xoffset < 0.5f)
+		{
+			xoffset += moveSpeed;
+
+			moved = true;
+
+			isMoveLeft = false;
+		}
+		else
+		{
+			isMoveLeft = false;
+		}
+
+	}
+	void GeneratedMapState::MoveRight()
+	{
+		if (xoffset > -0.5f)
+		{
+			xoffset -= moveSpeed;
+
+			moved = true;
+
+			isMoveRight = false;
+		}
+		else
+		{
+			isMoveRight = false;
 		}
 	}
 }
