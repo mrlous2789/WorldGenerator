@@ -8,7 +8,7 @@ namespace Mer
 
 	void LoadedMapState::Init()
 	{
-		wm.LoadFromFile("testFile.geojson");
+		//wm.LoadFromFile("testFile.geojson");
 
 		ImGui::CreateContext();
 		ImGui_ImplGlfw_InitForOpenGL(_data->window, false);
@@ -67,20 +67,20 @@ namespace Mer
 		if (loadfile)
 		{
 			
-			if (!wm.LoadFromFile(filename))
-			{
-				std::cout << "Error loading File" << std::endl;
-			}
-			else
-			{
-				for (int i = 0; i < wm.cells.size(); i++)
-				{
-					glBindVertexArray(i);
-					glBindBuffer(GL_ARRAY_BUFFER, Buffers[i]);
-					glBufferData(GL_ARRAY_BUFFER, wm.cells[i].coords.size() * sizeof(glm::vec3), &wm.cells[i].coords.front(), GL_STATIC_DRAW);
-					glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-				}
-			}
+			//if (!wm.LoadFromFile(filename))
+			//{
+			//	std::cout << "Error loading File" << std::endl;
+			//}
+			//else
+			//{
+			//	for (int i = 0; i < wm.cells.size(); i++)
+			//	{
+			//		glBindVertexArray(i);
+			//		glBindBuffer(GL_ARRAY_BUFFER, Buffers[i]);
+			//		glBufferData(GL_ARRAY_BUFFER, wm.cells[i].coords.size() * sizeof(glm::vec3), &wm.cells[i].coords.front(), GL_STATIC_DRAW);
+			//		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+			//	}
+			//}
 			loadfile = false;
 		}
 		

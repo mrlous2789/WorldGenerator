@@ -43,13 +43,13 @@ namespace Mer
 						{
 							if (xcoord)
 							{
-								x = ConvertToDouble(coord);
+								x = ConvertToFloat(coord);
 								xcoord = false;
 								coord = "";
 							}
 							else//if its the y coord then we already have the x coord so save onto temp coords vector
 							{
-								y = ConvertToDouble(coord);
+								y = ConvertToFloat(coord);
 								coords.push_back({ x,y,z });
 								xcoord = true;
 								coord = "";
@@ -154,7 +154,7 @@ namespace Mer
 			return 0;
 		}
 	}
-	float Reader::ConvertToDouble(std::string line)
+	float Reader::ConvertToFloat(std::string line)
 	{
 		try//try converting data to double
 		{
@@ -232,6 +232,85 @@ namespace Mer
 		std::cout << "Lowest X: " << lowestX << std::endl;
 		std::cout << "Highest Y: " << highestY << std::endl;
 		std::cout << "Lowest Y: " << lowestY << std::endl;
+	}
+
+
+	std::vector<Nation> Reader::ReadNationFile(std::string filename)
+	{
+		std::vector<Nation> nations;
+		std::fstream file;
+		file.open(filename);
+		std::string line;
+		int id = 0, capitalId = 0;
+		float red = 0.0f, green = 0.0f, blue = 0.0f;
+		while (std::getline(file,line))
+		{
+			if (line.find("id") != std::string::npos) { id = ConvertToInt(GetProperty(line)); }
+			else if (line.find("capital") != std::string::npos) { capitalId = ConvertToInt(GetProperty(line)); }
+			else if (line.find("red") != std::string::npos) { red = ConvertToInt(GetProperty(line)); }
+			else if (line.find("green") != std::string::npos) { green = ConvertToInt(GetProperty(line)); }
+			else if (line.find("blue") != std::string::npos) { blue = ConvertToInt(GetProperty(line)); }
+			else if (line == "    }")
+			{
+				Nation temp;
+				temp.id = id;
+				temp.capitalId = capitalId;
+				temp.colour[0] = red; temp.colour[1] = green; temp.colour[2] = blue;
+				nations.push_back(temp);
+			}
+		}
+		file.close();
+		return nations;
+	}
+	std::vector<Culture> Reader::ReadCutlureFile(std::string filename)
+	{
+		std::vector<Culture> cultures;
+		std::fstream file;
+		file.open(filename);
+		std::string line;
+		int id = 0;
+		float red = 0.0f, green = 0.0f, blue = 0.0f;
+		while (std::getline(file, line))
+		{
+			if (line.find("id") != std::string::npos) { id = ConvertToInt(GetProperty(line)); }
+			else if (line.find("red") != std::string::npos) { red = ConvertToFloat(GetProperty(line)); }
+			else if (line.find("green") != std::string::npos) { green = ConvertToFloat(GetProperty(line)); }
+			else if (line.find("blue") != std::string::npos) { blue = ConvertToFloat(GetProperty(line)); }
+			else if (line == "    }")
+			{
+				Culture temp;
+				temp.id = id;
+				temp.colour[0] = red; temp.colour[1] = green; temp.colour[2] = blue;
+				cultures.push_back(temp);
+			}
+		}
+		file.close();
+		return cultures;
+	}
+	std::vector<Religion> Reader::ReadReligionFile(std::string filename)
+	{
+		std::vector<Religion> religions;
+		std::fstream file;
+		file.open(filename);
+		std::string line;
+		int id = 0;
+		float red = 0.0f, green = 0.0f, blue = 0.0f;
+		while (std::getline(file, line))
+		{
+			if (line.find("id") != std::string::npos) { id = ConvertToInt(GetProperty(line)); }
+			else if (line.find("red") != std::string::npos) { red = ConvertToFloat(GetProperty(line)); }
+			else if (line.find("green") != std::string::npos) { green = ConvertToFloat(GetProperty(line)); }
+			else if (line.find("blue") != std::string::npos) { blue = ConvertToFloat(GetProperty(line)); }
+			else if (line == "    }")
+			{
+				Religion temp;
+				temp.id = id;
+				temp.colour[0] = red; temp.colour[1] = green; temp.colour[2] = blue;
+				religions.push_back(temp);
+			}
+		}
+		file.close();
+		return religions;
 	}
 }
 

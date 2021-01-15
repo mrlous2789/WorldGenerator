@@ -4,6 +4,9 @@
 #include <fstream>
 #include <string>
 #include "Cell.h"
+#include "Nation.h"
+#include "Culture.h"
+#include "Religion.h"
 
 namespace Mer
 {
@@ -12,7 +15,12 @@ namespace Mer
 	public:
 		Reader();
 
+
+
 		std::vector<Cell> ReadCellFile(std::string filename);
+		std::vector<Nation> ReadNationFile(std::string filename);
+		std::vector<Culture> ReadCutlureFile(std::string filename);
+		std::vector<Religion> ReadReligionFile(std::string filename);
 
 		//std::vector<Cell> cells;
 	private:
@@ -23,7 +31,7 @@ namespace Mer
 		std::pair<int, int>FindFirstAndLast(std::string line);
 		std::string GetProperty(std::string line);
 		int ConvertToInt(std::string property);
-		float ConvertToDouble(std::string property);
+		float ConvertToFloat(std::string property);
 
 		float highestX = 0.0f;
 		float lowestX = 0.0f;

@@ -1,6 +1,7 @@
 #pragma once
 #include "Reader.h"
 #include "WorldGenerator.h"
+
 namespace Mer
 {
 	class WorldManager
@@ -8,7 +9,7 @@ namespace Mer
 	public:
 		WorldManager();
 		bool Generate(int numOfSites, int numOfHighIslands, int numOfLowIslands, int numOfNations, int numOfCultures, int numOfReligions);
-		bool LoadFromFile(std::string cellFile);
+		bool LoadFromFile(std::string cellFile, std::string nationFile, std::string cultureFile, std::string religionFile);
 
 		Cell* getCellAtCoords(double xpos, double ypos);
 
@@ -21,9 +22,17 @@ namespace Mer
 		Culture getCultureById(int id);
 		Religion getReligionById(int id);
 
+		void SaveMap();
+		
+
 	private:
 		WorldGenerator wg;
 		Reader reader;
+
+		void saveWorld();
+		void saveNations();
+		void saveCultures();
+		void saveReligions();
 
 		bool Intersects(double mouseX, double mouseY, double edgeX1, double edgeY1, double edgeX2, double edgeY2);
 

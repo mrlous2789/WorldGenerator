@@ -39,9 +39,11 @@ namespace Mer
 
 		//io.Fonts->AddFontFromFileTTF("Fonts/Atteron.ttf", 18.0f, NULL, NULL);
 
-		wm.Generate(cellCount,numOfHighIslands,numOfLowIslands,numOfNations, numOfCultures, numOfReligions);
+		//wm.Generate(cellCount,numOfHighIslands,numOfLowIslands,numOfNations, numOfCultures, numOfReligions);
 
+		//reader.ReadNationFile(".\\OutputFiles\\testOutputFile_nations.csv");
 
+		wm.LoadFromFile();
 
 		glGenVertexArrays(NumVAOs, VAOs);
 		glGenBuffers(NumBuffers, Buffers);
@@ -136,6 +138,41 @@ namespace Mer
 		{
 
 		}
+		int state = glfwGetMouseButton(_data->window, GLFW_MOUSE_BUTTON_LEFT);
+		if (state == GLFW_PRESS)
+		{
+
+			glfwGetCursorPos(_data->window, &xpos, &ypos);
+			if (ImGui::GetIO().WantCaptureMouse)
+			{
+
+			}
+			else if (xpos > 0 && xpos <= windowW && ypos >= 0 && ypos <= windowH)
+			{
+				xpos -= (windowW / 2);
+				xpos = xpos / (windowW / 2);
+				ypos -= (windowH / 2);
+				ypos = ypos / (windowH / 2);
+				ypos *= -1;
+
+				xpos /= zoomLevel;
+				ypos /= zoomLevel;
+
+				xpos -= xoffset;
+				ypos -= yoffset;
+
+				Cell* temp = wm.getCellAtCoords(xpos, ypos);
+
+				if (selectedCell != temp)
+				{
+					selectedCell = temp;
+					cellChanged = true;
+				}
+
+				
+
+			}
+		}
 
 	}
 	void GeneratedMapState::Update()
@@ -155,18 +192,43 @@ namespace Mer
 
 		if (moved)
 		{
-
 			// creating the model matrix
 			model = glm::mat4(1.0f);
 			model = glm::scale(model, glm::vec3(zoomLevel, zoomLevel, 1.0f));
 			model = glm::translate(model, glm::vec3(xoffset, yoffset, 0.0f));
 			model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1.0f, 1.0f, 0.0f));
 
-
 			// Adding all matrices up to create combined matrix
 			mvp = projection * view * model;
 
 			moved = false;
+		}
+
+		if (cellChanged)
+		{
+			if (editStates)
+			{
+				if (selectedNation != -1 && selectedCell->type != "ocean")
+				{
+					selectedCell->state = selectedNation;
+				}
+			}
+			else if (editCultures)
+			{
+				if (selectedCulture != -1 && selectedCell->type != "ocean")
+				{
+					selectedCell->culture = selectedNation;
+				}
+			}
+			else if (editReligions)
+			{
+				if (selectedReligion != -1 && selectedCell->type != "ocean")
+				{
+					selectedCell->religion = selectedNation;
+				}
+			}
+
+			cellChanged = false;
 
 		}
 
@@ -189,36 +251,15 @@ namespace Mer
 			generateNew = false;
 		}
 
+		if (savemap)
+		{
+			wm.SaveMap();
 
+			savemap = false;
+		}
 		
 
-		int state = glfwGetMouseButton(_data->window, GLFW_MOUSE_BUTTON_LEFT);
-		if (state == GLFW_PRESS)
-		{
-			
-			glfwGetCursorPos(_data->window, &xpos, &ypos);
-			if (ImGui::GetIO().WantCaptureMouse)
-			{
 
-			}
-			else if (xpos > 0 && xpos <= windowW && ypos >= 0 && ypos <= windowH)
-			{
-				xpos -= (windowW / 2);
-				xpos = xpos / (windowW / 2);
-				ypos -= (windowH / 2);
-				ypos = ypos / (windowH / 2);
-				ypos *= -1;
-
-				xpos /= zoomLevel;
-				ypos /= zoomLevel;
-
-				xpos -= xoffset;
-				ypos -= yoffset;
-
-				selectedCell = wm.getCellAtCoords(xpos, ypos);
-
-			}
-		}
 		glfwPollEvents();
 	}
 	void GeneratedMapState::Draw()
@@ -399,6 +440,8 @@ namespace Mer
 		ImGui::SliderInt("Number of Religions", &numOfReligions, 3, 25, "%d", ImGuiSliderFlags_AlwaysClamp);
 		if (ImGui::Button("New Map") && !generateNew)
 			generateNew = true;
+		if (ImGui::Button("Save map") && !savemap)
+			savemap = true;
 
 		ImGui::InputText("Filename: ", filename, ARRAYSIZE(filename));
 		ImGui::End();//end of settings imgui window
@@ -428,21 +471,24 @@ namespace Mer
 		ImGui::Begin("Edit menu");//edit menu imgui window
 		if (ImGui::Button("Edit nations"))
 		{
-			editStates = true;
+			editStates = !editStates;
 			editCultures = false;
 			editReligions = false;
+			mapmode = 1;
 		}
 		if (ImGui::Button("Edit cultures"))
 		{
 			editStates = false;
-			editCultures = true;
+			editCultures = !editCultures;
 			editReligions = false;
+			mapmode = 2;
 		}
 		if (ImGui::Button("Edit religions"))
 		{
 			editStates = false;
 			editCultures = false;
-			editReligions = true;
+			editReligions = !editReligions;
+			mapmode = 3;
 		}
 		ImGui::End();//end of edit menu imgui window
 
@@ -454,9 +500,12 @@ namespace Mer
 			{
 				char name[32];
 				sprintf_s(name, "Nation %d", j);
-				if (ImGui::Selectable(name,selected == j))
+				ImGui::ColorEdit3(name, wm.nations[j].colour,ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel);
+				ImGui::SameLine();
+				if (ImGui::Selectable(name,selectedNation == j))
 				{
-					selected = j;
+					
+					selectedNation = j;
 				}
 			}
 			ImGui::End();//state edit imgui window
@@ -464,15 +513,38 @@ namespace Mer
 		if (editCultures)
 		{
 			ImGui::Begin("Cultures edit"); //cultures edit imgui window
+			for (int j = 0; j < wm.cultures.size(); j++)
+			{
+				char name[32];
+				sprintf_s(name, "Cutlure %d", j);
+				ImGui::ColorEdit3(name, wm.cultures[j].colour, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel);
+				ImGui::SameLine();
+				if (ImGui::Selectable(name, selectedCulture == j))
+				{
+					selectedCulture = j;
+				}
+			}
 			ImGui::End();//cultures edit imgui window
 		}
 		if (editReligions)
 		{
 			ImGui::Begin("Religions edit"); //religions edit imgui window
+			for (int j = 0; j < wm.religions.size(); j++)
+			{
+				char name[32];
+				sprintf_s(name, "Religion %d", j);
+				ImGui::ColorEdit3("", wm.religions[j].colour, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel);
+				
+				ImGui::SameLine();
+				if (ImGui::Selectable(name, selectedReligion == j))
+				{
+					selectedReligion = j;
+				}				
+			}
 			ImGui::End();//religions edit imgui window
 		}
 
-		ImGui::ShowDemoWindow();
+		
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
