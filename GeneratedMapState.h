@@ -100,10 +100,10 @@ namespace Mer
 		bool cellChanged = false;
 
 		char filename[128] = "testFile.geojson";
-		char cellFile[128] = "\\OutputFiles\\testOutputFile.geojson";
-		char nationsFile[128] = "\\OutputFiles\\testOutputFile_nations.mer";
-		char cultureFile[128] = "\\OutputFiles\\testOutputFile_cultures.mer";
-		char religionsFile[128] = "\\OutputFiles\\testOutputFile_religions.mer";
+		char cellFile[128] = ".\\OutputFiles\\testOutputFile.geojson";
+		char nationsFile[128] = ".\\OutputFiles\\testOutputFile_nations.mer";
+		char cultureFile[128] = ".\\OutputFiles\\testOutputFile_cultures.mer";
+		char religionsFile[128] = ".\\OutputFiles\\testOutputFile_religions.mer";
 
 		void ZoomOut();
 		void ZoomIn();

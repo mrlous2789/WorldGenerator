@@ -43,7 +43,7 @@ namespace Mer
 
 		//reader.ReadNationFile(".\\OutputFiles\\testOutputFile_nations.csv");
 
-		wm.LoadFromFile();
+		wm.LoadFromFile(cellFile, nationsFile, cultureFile, religionsFile);
 
 		glGenVertexArrays(NumVAOs, VAOs);
 		glGenBuffers(NumBuffers, Buffers);

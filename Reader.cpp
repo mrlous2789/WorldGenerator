@@ -247,9 +247,9 @@ namespace Mer
 		{
 			if (line.find("id") != std::string::npos) { id = ConvertToInt(GetProperty(line)); }
 			else if (line.find("capital") != std::string::npos) { capitalId = ConvertToInt(GetProperty(line)); }
-			else if (line.find("red") != std::string::npos) { red = ConvertToInt(GetProperty(line)); }
-			else if (line.find("green") != std::string::npos) { green = ConvertToInt(GetProperty(line)); }
-			else if (line.find("blue") != std::string::npos) { blue = ConvertToInt(GetProperty(line)); }
+			else if (line.find("red") != std::string::npos) { red = ConvertToFloat(GetProperty(line)); }
+			else if (line.find("green") != std::string::npos) { green = ConvertToFloat(GetProperty(line)); }
+			else if (line.find("blue") != std::string::npos) { blue = ConvertToFloat(GetProperty(line)); }
 			else if (line == "    }")
 			{
 				Nation temp;
