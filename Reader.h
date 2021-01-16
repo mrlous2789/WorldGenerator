@@ -38,7 +38,7 @@ namespace Mer
 		float highestY = -10.0f;
 		float lowestY = 0.0f;
 
-		void NormaliseCells(std::vector<Cell> cells);
+		void NormaliseCells(std::vector<Cell>* cells);
 
 		void FindLowestAndHightest(std::vector<Cell> cells);
 

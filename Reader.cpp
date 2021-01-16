@@ -101,8 +101,12 @@ namespace Mer
 
 			FindLowestAndHightest(cells);
 
+			if (highestX > 1 || highestY > 1 || lowestX < -1 || lowestY < -1)
+			{
+				NormaliseCells(&cells);
+			}
 
-			NormaliseCells(cells);
+
 
 			FindLowestAndHightest(cells);
 
@@ -167,7 +171,7 @@ namespace Mer
 			return 0.0f;
 		}
 	}
-	void Reader::NormaliseCells(std::vector<Cell> cells)
+	void Reader::NormaliseCells(std::vector<Cell>* cells)
 	{
 		float xDiff = (lowestX + highestX) / 2;
 		float yDiff = (lowestY + highestY) / 2;
@@ -192,9 +196,9 @@ namespace Mer
 			yEdge = highestY - yDiff;
 		}
 
-		for (int i = 0; i < cells.size(); i++)
+		for (int i = 0; i < cells->size(); i++)
 		{
-			cells[i].NormaliseCoords(xDiff, yDiff, xEdge, yEdge);
+			cells->at(i).NormaliseCoords(xDiff, yDiff, xEdge, yEdge);
 		}
 	}
 	void Reader::FindLowestAndHightest(std::vector<Cell> cells)

@@ -5,7 +5,6 @@
 #include <string>
 
 
-
 namespace Mer
 {
 	class GeneratedMapState : public State
@@ -85,11 +84,26 @@ namespace Mer
 		bool isMoveRight = false;
 		bool isMoveLeft = false;
 
+		bool showSettings = false;
+
 		bool editStates = false;
 		bool editCultures = false;
 		bool editReligions = false;
 
+		bool deleteNation = false;
+		bool deleteCulture = false;
+		bool deleteReligion = false;	
+
+		bool addNation = false;
+		bool addCulture = false;
+		bool addReligion = false;
+
 		bool isLoadingMap = false;
+
+		bool changeto900 = false;
+		bool changeto1080 = false;
+		bool changeto768 = false;
+		bool changeto720 = false;
 
 		std::vector<bool>selectedNations;
 
@@ -103,10 +117,10 @@ namespace Mer
 		bool cellChanged = false;
 
 		char filename[128] = "testFile.geojson";
-		char cellFile[128] = ".\\OutputFiles\\testOutputFile.geojson";
-		char nationsFile[128] = ".\\OutputFiles\\testOutputFile_nations.mer";
-		char cultureFile[128] = ".\\OutputFiles\\testOutputFile_cultures.mer";
-		char religionsFile[128] = ".\\OutputFiles\\testOutputFile_religions.mer";
+		char cellFile[128] = ".\\OutputFiles\\mapname.geojson";
+		char nationsFile[128] = ".\\OutputFiles\\mapname_nations.mer";
+		char cultureFile[128] = ".\\OutputFiles\\mapname_cultures.mer";
+		char religionsFile[128] = ".\\OutputFiles\\mapname_religions.mer";
 		char mapName[128] = "mapname";
 
 		void ZoomOut();
@@ -120,5 +134,3 @@ namespace Mer
 		GLfloat color[3] = { 0.0f,0.0f,1.0f };
 	};
 }
-
-

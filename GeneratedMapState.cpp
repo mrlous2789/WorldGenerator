@@ -53,7 +53,7 @@ namespace Mer
 
 		glPointSize(1.0f);
 		
-
+		
 		for (int i = 0; i < wm.cells.size(); i++)
 		{
 			glBindBuffer(GL_ARRAY_BUFFER, Buffers[i]);
@@ -182,14 +182,11 @@ namespace Mer
 
 				Cell* temp = wm.getCellAtCoords(xpos, ypos);
 
-				if (selectedCell != temp)
+				if (selectedCell != temp && temp!=nullptr)
 				{
 					selectedCell = temp;
 					cellChanged = true;
 				}
-
-				
-
 			}
 		}
 
@@ -229,21 +226,21 @@ namespace Mer
 			{
 				if (selectedNation != -1 && selectedCell->type != "ocean")
 				{
-					selectedCell->state = selectedNation;
+					selectedCell->state = wm.nations[selectedNation].id;
 				}
 			}
 			else if (editCultures)
 			{
 				if (selectedCulture != -1 && selectedCell->type != "ocean")
 				{
-					selectedCell->culture = selectedNation;
+					selectedCell->culture = wm.cultures[selectedCulture].id;
 				}
 			}
 			else if (editReligions)
 			{
 				if (selectedReligion != -1 && selectedCell->type != "ocean")
 				{
-					selectedCell->religion = selectedNation;
+					selectedCell->religion = wm.religions[selectedReligion].id;
 				}
 			}
 
@@ -284,6 +281,7 @@ namespace Mer
 					glBufferData(GL_ARRAY_BUFFER, wm.cells[i].coords.size() * sizeof(glm::vec3), &wm.cells[i].coords.front(), GL_STATIC_DRAW);
 					glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 				}
+				std::cout << "loaded file" << std::endl;
 			}
 			else
 			{
@@ -299,8 +297,87 @@ namespace Mer
 
 			savemap = false;
 		}
-		
+		if (deleteNation)
+		{
+			if (selectedNation != -1)
+			{
+				wm.deleteNation(selectedNation);
+				if (selectedNation >= wm.nations.size())
+				{
+					selectedNation--;
+				}
+			}
+			deleteNation = false;
+		}
+		if (deleteCulture)
+		{
+			if (selectedCulture != -1)
+			{
+				wm.deleteReligion(selectedCulture);
+				if (selectedCulture >= wm.cultures.size())
+				{
+					selectedCulture--;
+				}
+			}
+			deleteCulture = false;
+		}
+		if (deleteReligion)
+		{
+			if (selectedReligion != -1)
+			{
+				wm.deleteReligion(selectedReligion);
+				if (selectedReligion >= wm.religions.size())
+				{
+					selectedReligion--;
+				}
+			}
+			deleteReligion = false;
+		}
 
+		if (addNation)
+		{
+			wm.addNation();
+			addNation = false;
+		}
+		if (addCulture)
+		{
+			wm.addCulture();
+			addCulture = false;
+		}
+		if (addReligion)
+		{
+			wm.addReligion();
+			addReligion = false;
+		}
+
+		if (changeto1080)
+		{
+			glfwSetWindowSize(_data->window, 1920, 1080);
+			glfwGetWindowSize(_data->window, &windowW, &windowH);
+			glViewport(0, 0, windowW, windowH);
+			changeto1080 = false;
+		}
+		if (changeto900)
+		{
+			glfwSetWindowSize(_data->window, 1600, 900);
+			glfwGetWindowSize(_data->window, &windowW, &windowH);
+			glViewport(0, 0, windowW, windowH);
+			changeto900 = false;
+		}
+		if (changeto768)
+		{
+			glfwSetWindowSize(_data->window, 1366, 768);
+			glfwGetWindowSize(_data->window, &windowW, &windowH);
+			glViewport(0, 0, windowW, windowH);
+			changeto768 = false;
+		}
+		if (changeto720)
+		{
+			glfwSetWindowSize(_data->window, 1280, 720);
+			glfwGetWindowSize(_data->window, &windowW, &windowH);
+			glViewport(0, 0, windowW, windowH);
+			changeto720 = false;
+		}
 
 		glfwPollEvents();
 	}
@@ -320,7 +397,13 @@ namespace Mer
 			if (mapmode == 1)
 			{
 				Nation nat = wm.getNationById(wm.cells[i].state);
-				if (nat.id == -1)
+				if (wm.cells[i].id == selectedCell->id)
+				{
+					color[0] = 1.0f;
+					color[1] = 1.0f;
+					color[2] = 0.0f;
+				}
+				else if (nat.id == -1)
 				{
 					color[0] = 0.0f;
 					color[1] = 0.0f;
@@ -328,16 +411,22 @@ namespace Mer
 				}
 				else
 				{
-					color[0] = wm.getNationById(wm.cells[i].state).colour[0];
-					color[1] = wm.getNationById(wm.cells[i].state).colour[1];
-					color[2] = wm.getNationById(wm.cells[i].state).colour[2];
+					color[0] = nat.colour[0];
+					color[1] = nat.colour[1];
+					color[2] = nat.colour[2];
 				}
 
 			}
 			else if (mapmode == 2)
 			{
 				Culture cult = wm.getCultureById(wm.cells[i].culture);
-				if (cult.id == -1)
+				if (wm.cells[i].id == selectedCell->id)
+				{
+					color[0] = 1.0f;
+					color[1] = 1.0f;
+					color[2] = 0.0f;
+				}
+				else if (cult.id == -1)
 				{
 					color[0] = 0.0f;
 					color[1] = 0.0f;
@@ -354,7 +443,13 @@ namespace Mer
 			else if (mapmode == 3)
 			{
 				Religion rel = wm.getReligionById(wm.cells[i].religion);
-				if (rel.id == -1)
+				if (wm.cells[i].id == selectedCell->id)
+				{
+					color[0] = 1.0f;
+					color[1] = 1.0f;
+					color[2] = 0.0f;
+				}
+				else if (rel.id == -1)
 				{
 					color[0] = 0.0f;
 					color[1] = 0.0f;
@@ -369,7 +464,7 @@ namespace Mer
 			}
 			else
 			{
-				if (wm.cells[i].id == selectedCell->id && selectedCell != nullptr)
+				if (wm.cells[i].id == selectedCell->id)
 				{
 					color[0] = 1.0f;
 					color[1] = 1.0f;
@@ -473,7 +568,7 @@ namespace Mer
 			showCellBorders = !showCellBorders;
 		}
 		ImGui::End();//end of map modes imgui window
-		ImGui::Begin("Settings");//settings imgui window
+		ImGui::Begin("Main menu");//main menu imgui window
 		ImGui::SliderInt("Number of Cells", &cellCount, 3000, 12000, "%d", ImGuiSliderFlags_AlwaysClamp);
 		ImGui::SliderInt("Number of High Islands", &numOfHighIslands, 1, 3, "%d", ImGuiSliderFlags_AlwaysClamp);
 		ImGui::SliderInt("Number of Low Islands", &numOfLowIslands, 1, 30, "%d", ImGuiSliderFlags_AlwaysClamp);
@@ -485,9 +580,12 @@ namespace Mer
 		if (ImGui::Button("Save map as") && !savemap)
 			savemap = true;
 		ImGui::SameLine(); ImGui::InputText("Map name", mapName, ARRAYSIZE(mapName));
-		if (ImGui::Button("Load Map") && !isLoadingMap)
-			isLoadingMap = true;
-		ImGui::End();//end of settings imgui window
+		if (ImGui::Button("Load Map"))
+			isLoadingMap = !isLoadingMap;
+		if (ImGui::Button("Settings"))
+			showSettings = !showSettings;
+			
+		ImGui::End();//end of main menu imgui window
 
 		ImGui::Begin("Selected cell"); //Seleted cell imgui window
 
@@ -546,11 +644,15 @@ namespace Mer
 				ImGui::ColorEdit3(name, wm.nations[j].colour,ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel);
 				ImGui::SameLine();
 				if (ImGui::Selectable(name,selectedNation == j))
-				{
-					
+				{					
 					selectedNation = j;
 				}
 			}
+			if (ImGui::Button("Delete nation"))
+				deleteNation = true;
+			ImGui::SameLine();
+			if (ImGui::Button("Add nation"))
+				addNation = true;
 			ImGui::End();//state edit imgui window
 		}
 		if (editCultures)
@@ -567,6 +669,11 @@ namespace Mer
 					selectedCulture = j;
 				}
 			}
+			if (ImGui::Button("Delete culture"))
+				deleteCulture = true;
+			ImGui::SameLine();
+			if (ImGui::Button("Add culture"))
+				addCulture = true;
 			ImGui::End();//cultures edit imgui window
 		}
 		if (editReligions)
@@ -582,8 +689,13 @@ namespace Mer
 				if (ImGui::Selectable(name, selectedReligion == j))
 				{
 					selectedReligion = j;
-				}				
+				}		
 			}
+			if (ImGui::Button("Delete religion"))
+				deleteReligion = true;
+			ImGui::SameLine();
+			if (ImGui::Button("Add religion"))
+				addReligion = true;
 			ImGui::End();//religions edit imgui window
 		}
 		if (isLoadingMap)
@@ -597,6 +709,23 @@ namespace Mer
 				loadNewMap = true;
 			ImGui::End();
 		}
+		if (showSettings)
+		{
+			ImGui::Begin("Settings");
+			if (ImGui::CollapsingHeader("Resolutions"))
+			{
+				if (ImGui::Button("1920x1080"))
+					changeto1080 = true;
+				if (ImGui::Button("1600x900"))
+					changeto900 = true;
+				if (ImGui::Button("1366x768"))
+					changeto768 = true;
+				if (ImGui::Button("1280x720"))
+					changeto720 = true;
+			}
+			ImGui::End();
+		}
+
 
 		
 		ImGui::Render();

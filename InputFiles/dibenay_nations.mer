@@ -1,0 +1,10 @@
+Nations
+{
+    {
+        "id": "1"
+        "capital": "0"
+        "red": "0.5"
+        "green": "0.5"
+        "blue": "0.5"
+    }
+}

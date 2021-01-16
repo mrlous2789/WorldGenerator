@@ -22,12 +22,6 @@ namespace Mer
 		religions = reader.ReadReligionFile(religionFile);
 		if (cells.empty())
 			return false;
-		else if (nations.empty())
-			return false;
-		else if (cultures.empty())
-			return false;
-		else if (religions.empty())
-			return false;
 		else
 			return true;
 	}
@@ -76,23 +70,15 @@ namespace Mer
 		Nation nat;
 		nat.id = -1;
 		nat.capitalId = -1;
+
 		if (id >= 0 && id < nations.size())
-		{
 			if (nations[id].id == id)
-			{
 				return nations[id];
-			}
-		}
-		else
-		{
-			for (int i = 0; i < nations.size(); i++)
-			{
-				if (nations[i].id == id)
-				{
-					return nations[i];
-				}
-			}
-		}
+
+		for (int i = 0; i < nations.size(); i++)
+			if (nations[i].id == id)
+				return nations[i];
+
 		return nat;
 	}
 	Culture WorldManager::getCultureById(int id)
@@ -100,22 +86,14 @@ namespace Mer
 		Culture cult;
 		cult.id = -1;
 		if (id >= 0 && id < cultures.size())
-		{
 			if (cultures[id].id == id)
-			{
 				return cultures[id];
-			}
-		}
-		else
-		{
-			for (int i = 0; i < cultures.size(); i++)
-			{
-				if (cultures[i].id == id)
-				{
-					return cultures[i];
-				}
-			}
-		}
+
+		for (int i = 0; i < cultures.size(); i++)
+			if (cultures[i].id == id)
+				return cultures[i];
+
+
 		return cult;
 	}
 	Religion WorldManager::getReligionById(int id)
@@ -124,22 +102,14 @@ namespace Mer
 		rel.id = -1;
 
 		if (id >= 0 && id < religions.size())
-		{
 			if (religions[id].id == id)
-			{
 				return religions[id];
-			}
-		}
-		else
-		{
-			for (int i = 0; i < religions.size(); i++)
-			{
-				if (religions[i].id == id)
-				{
-					return religions[i];
-				}
-			}
-		}
+
+		for (int i = 0; i < religions.size(); i++)
+			if (religions[i].id == id)
+				return religions[i];
+
+		
 		return rel;
 	}
 
@@ -275,5 +245,82 @@ namespace Mer
 		}
 		file << "}";
 		file.close();
+	}
+
+	void WorldManager::deleteNation(int index)
+	{
+		for (int i = 0; i < cells.size(); i++)
+		{
+			if (cells[i].state == nations[index].id)
+			{
+				cells[i].state = -1;
+			}
+		}
+
+		nations.erase(nations.begin() + index);
+	}
+	void WorldManager::deleteCulture(int index)
+	{
+		for (int i = 0; i < cells.size(); i++)
+		{
+			if (cells[i].culture == cultures[index].id)
+			{
+				cells[i].culture = -1;
+			}
+		}
+
+		cultures.erase(cultures.begin() + index);
+	}
+	void WorldManager::deleteReligion(int index)
+	{
+		for (int i = 0; i < cells.size(); i++)
+		{
+			if (cells[i].religion == religions[index].id)
+			{
+				cells[i].religion = -1;
+			}
+		}
+
+		religions.erase(religions.begin() + index);
+	}
+	void WorldManager::addNation()
+	{
+		Nation temp;
+		if (nations.empty())
+			temp.id = 0;
+		else
+			temp.id = nations.back().id + 1;
+
+		temp.capitalId = -1;
+		temp.colour[0] = 0.3f;
+		temp.colour[1] = 0.3f;
+		temp.colour[2] = 0.3f;
+		nations.push_back(temp);
+	}
+	void WorldManager::addCulture()
+	{
+		Culture temp;
+		if (cultures.empty())
+			temp.id = 0;
+		else
+			temp.id = cultures.back().id + 1;
+
+		temp.colour[0] = 0.3f;
+		temp.colour[1] = 0.3f;
+		temp.colour[2] = 0.3f;
+		cultures.push_back(temp);
+	}
+	void WorldManager::addReligion()
+	{
+		Religion temp;
+		if (religions.empty())
+			temp.id = 0;
+		else
+			temp.id = religions.back().id + 1;
+
+		temp.colour[0] = 0.3f;
+		temp.colour[1] = 0.3f;
+		temp.colour[2] = 0.3f;
+		religions.push_back(temp);
 	}
 }

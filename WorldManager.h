@@ -24,7 +24,13 @@ namespace Mer
 
 		void SaveMap(std::string mapname);
 		
-
+		void deleteNation(int index);
+		void deleteCulture(int index);
+		void deleteReligion(int index);
+		
+		void addNation();
+		void addCulture();
+		void addReligion();
 	private:
 		WorldGenerator wg;
 		Reader reader;

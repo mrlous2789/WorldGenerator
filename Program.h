@@ -11,8 +11,8 @@
 #include <glm/gtc/type_ptr.hpp> // GLM: access to the value_ptr
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
-
 #include "StateMachine.h"
+
 
 
 namespace Mer
@@ -34,7 +34,11 @@ namespace Mer
 		bool Init();
 		void CleanUp();
 
-		
+		GLFWimage icons[2];
+
+		char icon16x16Filename[128] = "media\\icon\\icon16x16.png";
+		char icon32x32Filename[128] = "media\\icon\\icon32x32.png";
+
 		ProgramDataReF _data = std::make_shared<ProgramData>();
 
 #define BUFFER_OFFSET(a) ((void*)(a))
