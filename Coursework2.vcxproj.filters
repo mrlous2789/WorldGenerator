@@ -31,25 +31,22 @@
     <ClCompile Include="imgui_impl_opengl3.cpp">
       <Filter>DearImGUI</Filter>
     </ClCompile>
-    <ClCompile Include="imgui_tables.cpp">
-      <Filter>DearImGUI</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui_widgets.cpp">
-      <Filter>DearImGUI</Filter>
-    </ClCompile>
     <ClCompile Include="StateMachine.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="LoadedMapState.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedMapState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="WorldGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="WorldManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_tables.cpp">
+      <Filter>DearImGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_widgets.cpp">
+      <Filter>DearImGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="MapState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -76,28 +73,10 @@
     <ClInclude Include="imgui_impl_opengl3.h">
       <Filter>DearImGUI</Filter>
     </ClInclude>
-    <ClInclude Include="imgui_internal.h">
-      <Filter>DearImGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="imstb_rectpack.h">
-      <Filter>DearImGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="imstb_textedit.h">
-      <Filter>DearImGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="imstb_truetype.h">
-      <Filter>DearImGUI</Filter>
-    </ClInclude>
     <ClInclude Include="StateMachine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="State.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LoadedMapState.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GeneratedMapState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Beachline.h">
@@ -149,6 +128,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="resource.h" />
+    <ClInclude Include="imgui_internal.h">
+      <Filter>DearImGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="imstb_textedit.h">
+      <Filter>DearImGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="imstb_truetype.h">
+      <Filter>DearImGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="imstb_rectpack.h">
+      <Filter>DearImGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="MapState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

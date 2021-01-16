@@ -35,7 +35,7 @@ namespace Mer
 
 		float highestX = 0.0f;
 		float lowestX = 0.0f;
-		float highestY = -10.0f;
+		float highestY = -10.0f;//is -10.0f because one of my test files didint have any coords above 0
 		float lowestY = 0.0f;
 
 		void NormaliseCells(std::vector<Cell>* cells);

@@ -1,12 +1,12 @@
-#include "GeneratedMapState.h"
+#include "MapState.h"
 namespace Mer
 {
-	bool GeneratedMapState::isZoomIn = false;
-	bool GeneratedMapState::isZoomOut = false;
-	GeneratedMapState::GeneratedMapState(ProgramDataReF data) : _data(data)
+	bool MapState::isZoomIn = false;
+	bool MapState::isZoomOut = false;
+	MapState::MapState(ProgramDataReF data) : _data(data)
 	{
 	}
-	void GeneratedMapState::scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+	void MapState::scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 	{
 		if (yoffset < 0)
 		{
@@ -17,18 +17,18 @@ namespace Mer
 			isZoomIn = true;
 		}
 	}
-	void GeneratedMapState::char_callback(GLFWwindow* window, unsigned int key)
+	void MapState::char_callback(GLFWwindow* window, unsigned int key)
 	{
 		if (ImGui::GetIO().WantCaptureKeyboard)
 		{
 			ImGui::GetIO().AddInputCharacter(key);
 		}		
 	}
-	void GeneratedMapState::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+	void MapState::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 	{
 
 	}
-	void GeneratedMapState::Init()
+	void MapState::Init()
 	{
 
 		ImGui::CreateContext();
@@ -113,7 +113,7 @@ namespace Mer
 		//glfwSetKeyCallback(_data->window, key_callback);
 		glfwGetWindowSize(_data->window, &windowW, &windowH);
 	}
-	void GeneratedMapState::HandleInput()
+	void MapState::HandleInput()
 	{
 		if (ImGui::GetIO().WantCaptureMouse)
 		{
@@ -191,7 +191,7 @@ namespace Mer
 		}
 
 	}
-	void GeneratedMapState::Update()
+	void MapState::Update()
 	{
 		if (isZoomIn)
 			ZoomIn();
@@ -381,7 +381,7 @@ namespace Mer
 
 		glfwPollEvents();
 	}
-	void GeneratedMapState::Draw()
+	void MapState::Draw()
 	{
 		static const float black[] = { 0.0f, 0.0f, 0.0f, 0.0f };
 
@@ -735,13 +735,13 @@ namespace Mer
 
 		glfwSwapBuffers(_data->window);
 	}
-	void GeneratedMapState::CleanUp()
+	void MapState::CleanUp()
 	{
 		glDeleteBuffers(NumBuffers, Buffers);
 		glDeleteVertexArrays(NumVAOs, VAOs);
 	}
 
-	void GeneratedMapState::ZoomIn()
+	void MapState::ZoomIn()
 	{
 		if (zoomLevel + zoomRate < maxZoom)
 		{
@@ -757,7 +757,7 @@ namespace Mer
 		}
 
 	}
-	void GeneratedMapState::ZoomOut()
+	void MapState::ZoomOut()
 	{
 		if (zoomLevel - zoomRate > minZoom)
 		{
@@ -790,7 +790,7 @@ namespace Mer
 		}
 	}
 	
-	void GeneratedMapState::MoveUp()
+	void MapState::MoveUp()
 	{
 		if ((yoffset - (1.0f / zoomLevel)) > -0.99f)
 		{
@@ -805,7 +805,7 @@ namespace Mer
 			isMoveUp = false;
 		}
 	}
-	void GeneratedMapState::MoveDown()
+	void MapState::MoveDown()
 	{
 		if ((yoffset + (1.0f/ zoomLevel)) < 0.99f)
 		{
@@ -821,7 +821,7 @@ namespace Mer
 		}
 
 	}
-	void GeneratedMapState::MoveLeft()
+	void MapState::MoveLeft()
 	{
 		if ((xoffset + (1.0f / zoomLevel)) < 0.99f)
 		{
@@ -837,7 +837,7 @@ namespace Mer
 		}
 
 	}
-	void GeneratedMapState::MoveRight()
+	void MapState::MoveRight()
 	{
 		if ((xoffset - (1.0f / zoomLevel)) > -0.99f)
 		{

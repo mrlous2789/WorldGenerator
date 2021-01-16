@@ -7,10 +7,10 @@
 
 namespace Mer
 {
-	class GeneratedMapState : public State
+	class MapState : public State
 	{
 	public:
-		GeneratedMapState(ProgramDataReF data);
+		MapState(ProgramDataReF data);
 		void Init();
 		void HandleInput();
 		void Update();

@@ -1,6 +1,5 @@
 #include "Program.h"
-#include "LoadedMapState.h"
-#include "GeneratedMapState.h"
+#include "MapState.h"
 
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -12,7 +11,7 @@ namespace Mer
 	{
 		if (Init())
 		{
-			this->_data->machine.AddState(StateRef(new GeneratedMapState(_data)));
+			this->_data->machine.AddState(StateRef(new MapState(_data)));
 			Run();
 		}
 	}

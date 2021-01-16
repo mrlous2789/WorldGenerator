@@ -51,8 +51,9 @@ namespace Mer
 	{
 		for (int i = 0; i < coords.size(); i++)
 		{
-			coords[i].x = ((coords[i].x - xDiff) / xEdge) * -1;
-			coords[i].y = ((coords[i].y - yDiff) / yEdge) * -1;
+			coords[i].x = ((coords[i].x - xDiff) / xEdge) * -1;//all cells are scaled using the same numbers
+			coords[i].y = ((coords[i].y - yDiff) / yEdge) * -1;//the diff variables are used to centre the map
+															   //the edge variables are used to scale down the coords to all fit in -1 -> 1	
 		}
 	}
 

@@ -31,8 +31,8 @@ namespace Mer
 				{
 					int start = line.find_first_of('[');//find the start of the coordinates
 					std::string coord = "";
-					float x = 0.0f, y = 0.0f, z = 0.0f;
-					bool xcoord = true;
+					float x = 0.0f, y = 0.0f, z = 0.0f;//z will always be 0 as the maps are 2d
+					bool xcoord = true;//toggles for if the its searching for xcoord or not
 					for (int i = start; i < line.size(); i++)
 					{
 						if (line.at(i) == '[' || line.at(i) == ']')//if a [ or ] do nothing
@@ -60,11 +60,11 @@ namespace Mer
 							coord += line.at(i);
 						}
 					}
-				}
-				else if (line.find("\"id\":") != std::string::npos) { id = ConvertToInt(GetProperty(line)); }
-				else if (line.find("\"height\":") != std::string::npos) { height = ConvertToInt(GetProperty(line)); }
-				else if (line.find("\"biome\":") != std::string::npos) { biome = ConvertToInt(GetProperty(line)); }
-				else if (line.find("\"type\":") != std::string::npos) { type = GetProperty(line); }
+				}															//
+				else if (line.find("\"id\":") != std::string::npos) { id = ConvertToInt(GetProperty(line)); }							//all these state if statements 																		
+				else if (line.find("\"height\":") != std::string::npos) { height = ConvertToInt(GetProperty(line)); }					//are pretty self explanatory 
+				else if (line.find("\"biome\":") != std::string::npos) { biome = ConvertToInt(GetProperty(line)); }						//if the attribute is on this line basically
+				else if (line.find("\"type\":") != std::string::npos) { type = GetProperty(line); }										//get the value basically
 				else if (line.find("\"population\":") != std::string::npos) { population = ConvertToInt(GetProperty(line)); }
 				else if (line.find("\"state\":") != std::string::npos) { state = ConvertToInt(GetProperty(line)); }
 				else if (line.find("\"province\":") != std::string::npos) { province = ConvertToInt(GetProperty(line)); }
@@ -99,9 +99,9 @@ namespace Mer
 				}
 			}
 
-			FindLowestAndHightest(cells);
+			FindLowestAndHightest(cells);//find the highest and lowest coords
 
-			if (highestX > 1 || highestY > 1 || lowestX < -1 || lowestY < -1)
+			if (highestX > 1 || highestY > 1 || lowestX < -1 || lowestY < -1)//if the cells coords go out of bounds normalise them 
 			{
 				NormaliseCells(&cells);
 			}
@@ -111,7 +111,6 @@ namespace Mer
 			FindLowestAndHightest(cells);
 
 			file.close();
-			std::cout << "Done" << std::endl;
 			return cells;
 		}
 		else//return error
@@ -127,7 +126,7 @@ namespace Mer
 		int last = line.find_last_of("\"");
 		int first = 0;
 
-		for (int i = (last - 1); i > 0; i--)
+		for (int i = (last - 1); i > 0; i--)//go backwards through string to find other "
 		{
 			if (line.at(i) == '\"')
 			{
@@ -160,7 +159,7 @@ namespace Mer
 	}
 	float Reader::ConvertToFloat(std::string line)
 	{
-		try//try converting data to double
+		try//try converting data to float
 		{
 			double prop = std::stof(line);
 			return prop;
@@ -173,13 +172,13 @@ namespace Mer
 	}
 	void Reader::NormaliseCells(std::vector<Cell>* cells)
 	{
-		float xDiff = (lowestX + highestX) / 2;
-		float yDiff = (lowestY + highestY) / 2;
+		float xDiff = (lowestX + highestX) / 2;//xdiff and ydiff are the furthest
+		float yDiff = (lowestY + highestY) / 2;//out coords after its centered
 
-		float xEdge = highestX + xDiff;
-		float yEdge = highestY + yDiff;
+		float xEdge = highestX + xDiff;//this isnt needed but im not removing it
+		float yEdge = highestY + yDiff;//because everything works as is
 
-		if (std::abs(lowestX) > std::abs(highestX))
+		if (std::abs(lowestX) > std::abs(highestX))//xEdge and yEdge are the values of the furthest out coords they will always be positive
 		{
 			xEdge = lowestX - xDiff;
 		}
@@ -196,6 +195,8 @@ namespace Mer
 			yEdge = highestY - yDiff;
 		}
 
+		//see NormaliseCoords for how these variables are used
+
 		for (int i = 0; i < cells->size(); i++)
 		{
 			cells->at(i).NormaliseCoords(xDiff, yDiff, xEdge, yEdge);
@@ -207,6 +208,8 @@ namespace Mer
 		lowestY = 0.0f;
 		highestX = 0.0f;
 		highestY = -10.0f;
+
+		//just loops through all cells and find the values code is self explanatory
 
 		for (int i = 0; i < cells.size(); i++)
 		{
@@ -230,17 +233,12 @@ namespace Mer
 				}
 			}
 		}
-
-
-		std::cout << "Highest X: " << highestX << std::endl;
-		std::cout << "Lowest X: " << lowestX << std::endl;
-		std::cout << "Highest Y: " << highestY << std::endl;
-		std::cout << "Lowest Y: " << lowestY << std::endl;
 	}
 
 
-	std::vector<Nation> Reader::ReadNationFile(std::string filename)
+	std::vector<Nation> Reader::ReadNationFile(std::string filename)//self explanatory
 	{
+		
 		std::vector<Nation> nations;
 		std::fstream file;
 		file.open(filename);
@@ -266,7 +264,7 @@ namespace Mer
 		file.close();
 		return nations;
 	}
-	std::vector<Culture> Reader::ReadCutlureFile(std::string filename)
+	std::vector<Culture> Reader::ReadCutlureFile(std::string filename)//self explanatory
 	{
 		std::vector<Culture> cultures;
 		std::fstream file;
@@ -291,7 +289,7 @@ namespace Mer
 		file.close();
 		return cultures;
 	}
-	std::vector<Religion> Reader::ReadReligionFile(std::string filename)
+	std::vector<Religion> Reader::ReadReligionFile(std::string filename)//self explanatory
 	{
 		std::vector<Religion> religions;
 		std::fstream file;
