@@ -51,7 +51,8 @@ namespace Mer
 
 		bool showCellBorders = true;
 		bool generateNew = false;
-		bool savemap;
+		bool savemap = false;
+		bool loadNewMap = false;
 
 		Cell* selectedCell;
 
@@ -88,6 +89,8 @@ namespace Mer
 		bool editCultures = false;
 		bool editReligions = false;
 
+		bool isLoadingMap = false;
+
 		std::vector<bool>selectedNations;
 
 		int selectedNation = -1;
@@ -104,6 +107,7 @@ namespace Mer
 		char nationsFile[128] = ".\\OutputFiles\\testOutputFile_nations.mer";
 		char cultureFile[128] = ".\\OutputFiles\\testOutputFile_cultures.mer";
 		char religionsFile[128] = ".\\OutputFiles\\testOutputFile_religions.mer";
+		char mapName[128] = "mapname";
 
 		void ZoomOut();
 		void ZoomIn();

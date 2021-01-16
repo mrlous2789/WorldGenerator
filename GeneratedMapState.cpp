@@ -26,7 +26,7 @@ namespace Mer
 	}
 	void GeneratedMapState::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 	{
-		std::cout << key << std::endl;
+
 	}
 	void GeneratedMapState::Init()
 	{
@@ -36,6 +36,11 @@ namespace Mer
 		ImGui_ImplOpenGL3_Init("#version 400");
 		//ImGui::SetWindowFontScale(20.0f);
 		ImGuiIO& io = ImGui::GetIO();
+
+		io.KeyMap[ImGuiKey_Delete] = GLFW_KEY_DELETE;
+		io.KeyMap[ImGuiKey_Backspace] = GLFW_KEY_BACKSPACE;
+		io.KeyMap[ImGuiKey_LeftArrow] = GLFW_KEY_LEFT;
+		io.KeyMap[ImGuiKey_RightArrow] = GLFW_KEY_RIGHT;
 
 		//io.Fonts->AddFontFromFileTTF("Fonts/Atteron.ttf", 18.0f, NULL, NULL);
 
@@ -104,6 +109,8 @@ namespace Mer
 		int mvpLoc = glGetUniformLocation(cellsShader, "mvp");
 		glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, glm::value_ptr(mvp));
 
+		
+
 		glfwSetScrollCallback(_data->window, scroll_callback);
 		glfwSetCharCallback(_data->window, char_callback);
 		//glfwSetKeyCallback(_data->window, key_callback);
@@ -136,7 +143,22 @@ namespace Mer
 		}
 		else
 		{
-
+			if (glfwGetKey(_data->window, GLFW_KEY_BACKSPACE) == 1)
+				ImGui::GetIO().KeysDown[ImGui::GetIO().KeyMap[ImGuiKey_Backspace]] = 1;
+			else
+				ImGui::GetIO().KeysDown[ImGui::GetIO().KeyMap[ImGuiKey_Backspace]] = 0;
+			if (glfwGetKey(_data->window, GLFW_KEY_DELETE) == 1)
+				ImGui::GetIO().KeysDown[ImGui::GetIO().KeyMap[ImGuiKey_Delete]] = 1;
+			else
+				ImGui::GetIO().KeysDown[ImGui::GetIO().KeyMap[ImGuiKey_Delete]] = 0;
+			if (glfwGetKey(_data->window, GLFW_KEY_LEFT) == 1)
+				ImGui::GetIO().KeysDown[ImGui::GetIO().KeyMap[ImGuiKey_LeftArrow]] = 1;
+			else
+				ImGui::GetIO().KeysDown[ImGui::GetIO().KeyMap[ImGuiKey_LeftArrow]] = 0;
+			if (glfwGetKey(_data->window, GLFW_KEY_RIGHT) == 1)
+				ImGui::GetIO().KeysDown[ImGui::GetIO().KeyMap[ImGuiKey_RightArrow]] = 1;
+			else
+				ImGui::GetIO().KeysDown[ImGui::GetIO().KeyMap[ImGuiKey_RightArrow]] = 0;
 		}
 		int state = glfwGetMouseButton(_data->window, GLFW_MOUSE_BUTTON_LEFT);
 		if (state == GLFW_PRESS)
@@ -251,6 +273,29 @@ namespace Mer
 			generateNew = false;
 		}
 
+		if (loadNewMap)
+		{
+			if (wm.LoadFromFile(cellFile, nationsFile, cultureFile, religionsFile))
+			{
+				for (int i = 0; i < wm.cells.size(); i++)
+				{
+					glBindBuffer(GL_ARRAY_BUFFER, Buffers[i]);
+					glBufferData(GL_ARRAY_BUFFER, wm.cells[i].coords.size() * sizeof(glm::vec3), &wm.cells[i].coords.front(), GL_STATIC_DRAW);
+					glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+					glBindBuffer(GL_ARRAY_BUFFER, borderBuffers[i]);
+					glBufferData(GL_ARRAY_BUFFER, wm.cells[i].coords.size() * sizeof(glm::vec3), &wm.cells[i].coords.front(), GL_STATIC_DRAW);
+					glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+				}
+			}
+			else
+			{
+				std::cout << "Error Loading file" << std::endl;
+			}
+
+			selectedCell = &wm.cells[0];
+			loadNewMap = false;
+		}
 		if (savemap)
 		{
 			wm.SaveMap();
@@ -440,10 +485,11 @@ namespace Mer
 		ImGui::SliderInt("Number of Religions", &numOfReligions, 3, 25, "%d", ImGuiSliderFlags_AlwaysClamp);
 		if (ImGui::Button("New Map") && !generateNew)
 			generateNew = true;
-		if (ImGui::Button("Save map") && !savemap)
+		if (ImGui::Button("Save map as") && !savemap)
 			savemap = true;
-
-		ImGui::InputText("Filename: ", filename, ARRAYSIZE(filename));
+		ImGui::SameLine(); ImGui::InputText("Map name", mapName, ARRAYSIZE(mapName));
+		if (ImGui::Button("Load Map") && !isLoadingMap)
+			isLoadingMap = true;
 		ImGui::End();//end of settings imgui window
 
 		ImGui::Begin("Selected cell"); //Seleted cell imgui window
@@ -542,6 +588,17 @@ namespace Mer
 				}				
 			}
 			ImGui::End();//religions edit imgui window
+		}
+		if (isLoadingMap)
+		{
+			ImGui::Begin("Load file");
+			ImGui::InputText("Cell file: ", cellFile, ARRAYSIZE(cellFile));
+			ImGui::InputText("Nations file: ", nationsFile, ARRAYSIZE(nationsFile));
+			ImGui::InputText("Culture file: ", cultureFile, ARRAYSIZE(cultureFile));
+			ImGui::InputText("Religion file: ", religionsFile, ARRAYSIZE(religionsFile));
+			if (ImGui::Button("Load files") && !loadNewMap)
+				loadNewMap = true;
+			ImGui::End();
 		}
 
 		
