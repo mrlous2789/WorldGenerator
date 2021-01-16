@@ -42,13 +42,10 @@ namespace Mer
 		io.KeyMap[ImGuiKey_LeftArrow] = GLFW_KEY_LEFT;
 		io.KeyMap[ImGuiKey_RightArrow] = GLFW_KEY_RIGHT;
 
-		//io.Fonts->AddFontFromFileTTF("Fonts/Atteron.ttf", 18.0f, NULL, NULL);
+		io.Fonts->AddFontFromFileTTF("Fonts/PoiretOne-Regular.ttf", 18.0f, NULL, NULL);
 
-		//wm.Generate(cellCount,numOfHighIslands,numOfLowIslands,numOfNations, numOfCultures, numOfReligions);
+		wm.Generate(cellCount,numOfHighIslands,numOfLowIslands,numOfNations, numOfCultures, numOfReligions);
 
-		//reader.ReadNationFile(".\\OutputFiles\\testOutputFile_nations.csv");
-
-		wm.LoadFromFile(cellFile, nationsFile, cultureFile, religionsFile);
 
 		glGenVertexArrays(NumVAOs, VAOs);
 		glGenBuffers(NumBuffers, Buffers);
@@ -298,7 +295,7 @@ namespace Mer
 		}
 		if (savemap)
 		{
-			wm.SaveMap();
+			wm.SaveMap(mapName);
 
 			savemap = false;
 		}
@@ -579,7 +576,7 @@ namespace Mer
 			{
 				char name[32];
 				sprintf_s(name, "Religion %d", j);
-				ImGui::ColorEdit3("", wm.religions[j].colour, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel);
+				ImGui::ColorEdit3(name, wm.religions[j].colour, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel);
 				
 				ImGui::SameLine();
 				if (ImGui::Selectable(name, selectedReligion == j))

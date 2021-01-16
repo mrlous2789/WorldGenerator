@@ -22,17 +22,17 @@ namespace Mer
 		Culture getCultureById(int id);
 		Religion getReligionById(int id);
 
-		void SaveMap();
+		void SaveMap(std::string mapname);
 		
 
 	private:
 		WorldGenerator wg;
 		Reader reader;
 
-		void saveWorld();
-		void saveNations();
-		void saveCultures();
-		void saveReligions();
+		void saveWorld(std::string mapname);
+		void saveNations(std::string mapname);
+		void saveCultures(std::string mapname);
+		void saveReligions(std::string mapname);
 
 		bool Intersects(double mouseX, double mouseY, double edgeX1, double edgeY1, double edgeX2, double edgeY2);
 

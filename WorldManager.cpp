@@ -143,17 +143,19 @@ namespace Mer
 		return rel;
 	}
 
-	void WorldManager::SaveMap()
+	void WorldManager::SaveMap(std::string mapname)
 	{
-		saveWorld();
-		saveNations();
-		saveCultures();
-		saveReligions();
+		saveWorld(mapname);
+		saveNations(mapname);
+		saveCultures(mapname);
+		saveReligions(mapname);
 	}
-	void WorldManager::saveWorld()
+	void WorldManager::saveWorld(std::string mapname)
 	{
 		std::ofstream file;
-		file.open(".\\OutputFiles\\testOutputFile.geojson");
+		std::string filename = ".\\OutputFiles\\" + mapname + ".geojson";
+
+		file.open(filename);
 		file.clear();
 
 		file << "{ \"type\": \"FeatureCollection\", \"features\": [\n";
@@ -213,10 +215,11 @@ namespace Mer
 
 		file.close();
 	}
-	void WorldManager::saveNations()
+	void WorldManager::saveNations(std::string mapname)
 	{
 		std::ofstream file;
-		file.open(".\\OutputFiles\\testOutputFile_nations.mer");
+		std::string filename = ".\\OutputFiles\\" + mapname + "_nations.mer";
+		file.open(filename);
 		file.clear();
 		file << "Nations\n";
 		file << "{\n";
@@ -233,11 +236,11 @@ namespace Mer
 		file << "}";
 		file.close();
 	}
-	void WorldManager::saveCultures()
+	void WorldManager::saveCultures(std::string mapname)
 	{
 		std::ofstream file;
-		
-		file.open(".\\OutputFiles\\testOutputFile_cultures.mer");
+		std::string filename = ".\\OutputFiles\\" + mapname + "_cultures.mer";
+		file.open(filename);
 		file.clear();
 		file << "Cultures\n";
 		file << "{\n";
@@ -253,10 +256,11 @@ namespace Mer
 		file << "}";
 		file.close();
 	}
-	void WorldManager::saveReligions()
+	void WorldManager::saveReligions(std::string mapname)
 	{
 		std::ofstream file;
-		file.open(".\\OutputFiles\\testOutputFile_religions.mer");
+		std::string filename = ".\\OutputFiles\\" + mapname + "_religions.mer";
+		file.open(filename);
 		file.clear();
 		file << "Religions\n";
 		file << "{\n";
