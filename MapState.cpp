@@ -19,14 +19,10 @@ namespace Mer
 	}
 	void MapState::char_callback(GLFWwindow* window, unsigned int key)
 	{
-		if (ImGui::GetIO().WantCaptureKeyboard)
+		if (ImGui::GetIO().WantCaptureKeyboard)//send input to imgui
 		{
 			ImGui::GetIO().AddInputCharacter(key);
 		}		
-	}
-	void MapState::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
-	{
-
 	}
 	void MapState::Init()
 	{
@@ -49,7 +45,7 @@ namespace Mer
 
 		glGenVertexArrays(NumVAOs, VAOs);
 		glGenBuffers(NumBuffers, Buffers);
-		glGenBuffers(NumBuffers, borderBuffers);
+		//glGenBuffers(NumBuffers, borderBuffers);
 
 		glPointSize(1.0f);
 		
@@ -59,10 +55,6 @@ namespace Mer
 			glBindBuffer(GL_ARRAY_BUFFER, Buffers[i]);
 			glBufferData(GL_ARRAY_BUFFER, wm.cells[i].coords.size() * sizeof(glm::vec3), &wm.cells[i].coords.front(), GL_STATIC_DRAW);
 			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-			glBindBuffer(GL_ARRAY_BUFFER, borderBuffers[i]);
-			glBufferData(GL_ARRAY_BUFFER, wm.cells[i].coords.size() * sizeof(glm::vec3), &wm.cells[i].coords.front(), GL_STATIC_DRAW);
-			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 		}
 		
 		ShaderInfo  shaders[] =
@@ -78,7 +70,6 @@ namespace Mer
 			{ GL_NONE, NULL }
 		};
 		cellsShader = LoadShaders(shaders);
-		borderShader = LoadShaders(borderShaders);
 
 		selectedCell = &wm.cells[0];
 
@@ -110,7 +101,6 @@ namespace Mer
 
 		glfwSetScrollCallback(_data->window, scroll_callback);
 		glfwSetCharCallback(_data->window, char_callback);
-		//glfwSetKeyCallback(_data->window, key_callback);
 		glfwGetWindowSize(_data->window, &windowW, &windowH);
 	}
 	void MapState::HandleInput()
@@ -206,7 +196,7 @@ namespace Mer
 		if (isMoveRight)
 			MoveRight();
 
-		if (moved)
+		if (moved)//mvp is calculated after all offsets and zoomlevels so it only has to happen once rather than on every zoom or move
 		{
 			// creating the model matrix
 			model = glm::mat4(1.0f);
@@ -220,8 +210,9 @@ namespace Mer
 			moved = false;
 		}
 
-		if (cellChanged)
+		if (cellChanged)//if a new cell has been selected
 		{
+			//edit cells if the user want it to be
 			if (editStates)
 			{
 				if (selectedNation != -1 && selectedCell->type != "ocean")
@@ -249,7 +240,7 @@ namespace Mer
 		}
 
 
-		if (generateNew)
+		if (generateNew)//generate new map and buffer data
 		{
 			wm.Generate(cellCount, numOfHighIslands, numOfLowIslands, numOfNations, numOfCultures, numOfReligions);
 			for (int i = 0; i < wm.cells.size(); i++)
@@ -257,17 +248,13 @@ namespace Mer
 				glBindBuffer(GL_ARRAY_BUFFER, Buffers[i]);
 				glBufferData(GL_ARRAY_BUFFER, wm.cells[i].coords.size() * sizeof(glm::vec3), &wm.cells[i].coords.front(), GL_STATIC_DRAW);
 				glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-				glBindBuffer(GL_ARRAY_BUFFER, borderBuffers[i]);
-				glBufferData(GL_ARRAY_BUFFER, wm.cells[i].coords.size() * sizeof(glm::vec3), &wm.cells[i].coords.front(), GL_STATIC_DRAW);
-				glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 			}
 
 			selectedCell = &wm.cells[0];
 			generateNew = false;
 		}
 
-		if (loadNewMap)
+		if (loadNewMap)//load new map and buffer data
 		{
 			if (wm.LoadFromFile(cellFile, nationsFile, cultureFile, religionsFile))
 			{
@@ -276,10 +263,6 @@ namespace Mer
 					glBindBuffer(GL_ARRAY_BUFFER, Buffers[i]);
 					glBufferData(GL_ARRAY_BUFFER, wm.cells[i].coords.size() * sizeof(glm::vec3), &wm.cells[i].coords.front(), GL_STATIC_DRAW);
 					glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-					glBindBuffer(GL_ARRAY_BUFFER, borderBuffers[i]);
-					glBufferData(GL_ARRAY_BUFFER, wm.cells[i].coords.size() * sizeof(glm::vec3), &wm.cells[i].coords.front(), GL_STATIC_DRAW);
-					glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 				}
 				std::cout << "loaded file" << std::endl;
 			}
@@ -291,7 +274,7 @@ namespace Mer
 			selectedCell = &wm.cells[0];
 			loadNewMap = false;
 		}
-		if (savemap)
+		if (savemap)//save map
 		{
 			wm.SaveMap(mapName);
 
@@ -350,6 +333,7 @@ namespace Mer
 			addReligion = false;
 		}
 
+		//change resolution of screen
 		if (changeto1080)
 		{
 			glfwSetWindowSize(_data->window, 1920, 1080);
@@ -389,11 +373,11 @@ namespace Mer
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
 
 
 		for (int i = 0; i < wm.cells.size(); i++)
 		{
+			//decide what colour to give the cell
 			if (mapmode == 1)
 			{
 				Nation nat = wm.getNationById(wm.cells[i].state);
@@ -514,25 +498,24 @@ namespace Mer
 			int mvpLoc = glGetUniformLocation(cellsShader, "mvp");
 			glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, glm::value_ptr(mvp));
 
+			//draw cells
 			glBindBuffer(GL_ARRAY_BUFFER, Buffers[i]);
 			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
 			glDrawArrays(GL_TRIANGLE_FAN, 0, wm.cells[i].coords.size());
 
-
+			//set colour to black for cell borders
 			color[0] = 0.0f;
 			color[1] = 0.0f;
 			color[2] = 0.0f;
 
 
-
-			if (showCellBorders && wm.cells[i].height > 0)
+			//draw cell borders on land
+			if (showCellBorders && wm.cells[i].type == "land" )
 			{
 				myLoc = glGetUniformLocation(cellsShader, "color");
 				glProgramUniform3fv(cellsShader, myLoc, 1, color);
 
-				glBindBuffer(GL_ARRAY_BUFFER, borderBuffers[i]);
-				glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 				glDrawArrays(GL_LINE_LOOP, 0, wm.cells[i].coords.size());
 			}
 
@@ -540,9 +523,10 @@ namespace Mer
 
 		}
 		glDisableVertexAttribArray(0);
-		glDisableVertexAttribArray(1);
 		glUseProgram(cellsShader);
 
+
+		//ui code its messy i dont think ui code can never not be messy
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
@@ -570,8 +554,8 @@ namespace Mer
 		ImGui::End();//end of map modes imgui window
 		ImGui::Begin("Main menu");//main menu imgui window
 		ImGui::SliderInt("Number of Cells", &cellCount, 3000, 12000, "%d", ImGuiSliderFlags_AlwaysClamp);
-		ImGui::SliderInt("Number of High Islands", &numOfHighIslands, 1, 3, "%d", ImGuiSliderFlags_AlwaysClamp);
-		ImGui::SliderInt("Number of Low Islands", &numOfLowIslands, 1, 30, "%d", ImGuiSliderFlags_AlwaysClamp);
+		ImGui::SliderInt("Number of High Islands", &numOfHighIslands, 0, 3, "%d", ImGuiSliderFlags_AlwaysClamp);
+		ImGui::SliderInt("Number of Low Islands", &numOfLowIslands, 0, 30, "%d", ImGuiSliderFlags_AlwaysClamp);
 		ImGui::SliderInt("Number of Nations", &numOfNations, 3, 25, "%d", ImGuiSliderFlags_AlwaysClamp);
 		ImGui::SliderInt("Number of Cultures", &numOfCultures, 3, 25, "%d", ImGuiSliderFlags_AlwaysClamp);
 		ImGui::SliderInt("Number of Religions", &numOfReligions, 3, 25, "%d", ImGuiSliderFlags_AlwaysClamp);
@@ -739,8 +723,11 @@ namespace Mer
 	{
 		glDeleteBuffers(NumBuffers, Buffers);
 		glDeleteVertexArrays(NumVAOs, VAOs);
+		
 	}
 
+
+	//map movements functions
 	void MapState::ZoomIn()
 	{
 		if (zoomLevel + zoomRate < maxZoom)
@@ -767,6 +754,8 @@ namespace Mer
 
 			isZoomOut = false;
 
+
+			//if the new zoom level causes off map to be shown change offset
 			if ((yoffset - (1.0f / zoomLevel)) < -0.99f)
 			{
 				yoffset = -0.99f + (1.0f / zoomLevel);

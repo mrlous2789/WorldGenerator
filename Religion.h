@@ -1,4 +1,5 @@
 #pragma once
+//data structure for a religion
 struct Religion
 {
 	int id;

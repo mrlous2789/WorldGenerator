@@ -17,7 +17,7 @@
 
 namespace Mer
 {
-	struct ProgramData
+	struct ProgramData //data that the whole program will need state machine became irrelavant as i managed to fit everything i wanted into one state
 	{
 		StateMachine machine;
 		GLFWwindow* window;
@@ -36,12 +36,12 @@ namespace Mer
 
 		GLFWimage icons[2];
 
-		char icon16x16Filename[128] = "media\\icon\\icon16x16.png";
+		char icon16x16Filename[128] = "media\\icon\\icon16x16.png";//icon file paths
 		char icon32x32Filename[128] = "media\\icon\\icon32x32.png";
 
 		ProgramDataReF _data = std::make_shared<ProgramData>();
 
-#define BUFFER_OFFSET(a) ((void*)(a))
+#define BUFFER_OFFSET(a) ((void*)(a))//i dont know what this does it came from the original code i got but im not removing it as everthing works
 
 	};
 }

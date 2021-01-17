@@ -13,6 +13,7 @@ namespace Mer
 
 		Cell* getCellAtCoords(double xpos, double ypos);
 
+		//map data
 		std::vector<Cell> cells;
 		std::vector<Nation> nations;
 		std::vector<Culture> cultures;
@@ -32,6 +33,7 @@ namespace Mer
 		void addCulture();
 		void addReligion();
 	private:
+		
 		WorldGenerator wg;
 		Reader reader;
 

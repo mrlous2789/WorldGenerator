@@ -5,14 +5,14 @@ namespace Mer
 	{
 		this->_isAdding = true;
 		this->_isReplacing = isReplacing;
-		this->_newState = std::move(newState);
+		this->_newState = std::move(newState);//moves new state to _newState will be added to the stack in ProcessStateChanges
 	}
 	void StateMachine::RemoveState()
 	{
 		this->_isRemoving = true;
 	}
 
-	void StateMachine::ProcessStateChanges()
+	void StateMachine::ProcessStateChanges()//just decides what to do based on the bool variables
 	{
 		if (this->_isRemoving && !this->_states.empty())
 		{

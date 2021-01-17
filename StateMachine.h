@@ -25,6 +25,7 @@ namespace Mer
 		std::stack<StateRef> _states;
 		StateRef _newState;
 
+		//used by process state changes to decide what to do
 		bool _isRemoving = false;
 		bool _isAdding = false;
 		bool _isReplacing = false;

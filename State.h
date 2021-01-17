@@ -1,7 +1,7 @@
 #pragma once
 namespace Mer
 {
-	class State
+	class State //base state class 
 	{
 	public:
 		virtual void Init() = 0;

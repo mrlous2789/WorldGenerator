@@ -9,7 +9,7 @@ namespace Mer
 {
 	Program::Program()
 	{
-		if (Init())
+		if (Init())//if init is succesful add the map state to the stack
 		{
 			this->_data->machine.AddState(StateRef(new MapState(_data)));
 			Run();
@@ -17,11 +17,7 @@ namespace Mer
 	}
 	void Program::Run()
 	{
-		//UINT32 newTime, frameTime, interpolation;
-
-
-
-		while (!glfwWindowShouldClose(_data->window))
+		while (!glfwWindowShouldClose(_data->window))//main program loop
 		{
 			this->_data->machine.ProcessStateChanges();
 
@@ -30,9 +26,9 @@ namespace Mer
 			this->_data->machine.GetActiveState()->Update();
 			this->_data->machine.GetActiveState()->Draw();
 		}
-		CleanUp();
+		CleanUp();//clean up memory before exiting
 	}
-	bool Program::Init()
+	bool Program::Init()//init glfw and glew and load icon
 	{
 		glfwInit();
 

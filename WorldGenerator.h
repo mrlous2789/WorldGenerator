@@ -25,14 +25,14 @@ namespace Mer
 
 		std::vector<Cell> Generate(int numSites);
 
-		//std::vector<Cell> cells;
+		//functions used by worldmanager to randomly generate a map
 		void GenerateHeight(int numOfHighIslands, int numOfLowIslands, std::vector<Cell>* cells);
-
 		std::vector<Nation> GenerateNations(int numOfNations, std::vector<Cell>* cells);
 		std::vector<Culture> GenerateCultures(int numOfCultures, std::vector<Cell>* cells);
 		std::vector<Religion> GenerateReligions(int numOfReligions, std::vector<Cell>* cells);
 		
 	private:
+		//randomly generates sites for a voronoi diagram
 		std::vector<mygal::Vector2<double>> GenerateSites(int numSites);
 
 

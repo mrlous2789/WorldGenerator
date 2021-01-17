@@ -44,11 +44,12 @@ namespace Mer
 				return &cells[i];
 			}
 		}
-
+		//if cell is not found e.g. mouse if off screen return a nullptr
 		return nullptr;
 	}
 	bool WorldManager::Intersects(double mouseX, double mouseY, double edgeX1, double edgeY1, double edgeX2, double edgeY2)
 	{
+		
 		if ((mouseY <= edgeY1) != (mouseY <= edgeY2))
 		{
 			if (mouseX <= (edgeX2 - edgeX1) * (mouseY - edgeY1) / (edgeY2 - edgeY1) + edgeX1)
@@ -113,6 +114,7 @@ namespace Mer
 		return rel;
 	}
 
+	//function called by the state
 	void WorldManager::SaveMap(std::string mapname)
 	{
 		saveWorld(mapname);
@@ -120,6 +122,7 @@ namespace Mer
 		saveCultures(mapname);
 		saveReligions(mapname);
 	}
+	//save world writes in a geojson format user can decide the name
 	void WorldManager::saveWorld(std::string mapname)
 	{
 		std::ofstream file;
@@ -185,6 +188,7 @@ namespace Mer
 
 		file.close();
 	}
+	//everthing else has a custom text format to make reading them easy
 	void WorldManager::saveNations(std::string mapname)
 	{
 		std::ofstream file;
@@ -247,6 +251,7 @@ namespace Mer
 		file.close();
 	}
 
+	//deletes self explanatory
 	void WorldManager::deleteNation(int index)
 	{
 		for (int i = 0; i < cells.size(); i++)
@@ -283,6 +288,7 @@ namespace Mer
 
 		religions.erase(religions.begin() + index);
 	}
+	//adds self explanatory
 	void WorldManager::addNation()
 	{
 		Nation temp;

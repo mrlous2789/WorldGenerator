@@ -28,10 +28,8 @@ namespace Mer
 
 		GLuint VAOs[NumVAOs];
 		GLuint Buffers[NumBuffers];		
-		GLuint borderBuffers[NumBuffers];
 
 		GLuint cellsShader;
-		GLuint borderShader;
 
 		std::vector<double> coords;
 
@@ -70,7 +68,6 @@ namespace Mer
 
 		static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 		static void char_callback(GLFWwindow* window, unsigned int key);
-		static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 		static bool isZoomOut;
 		static bool isZoomIn;
