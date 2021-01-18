@@ -53,18 +53,87 @@ there are no more cells or height hasnt gotten too low. Here is a simplified exa
 <img src="./media/report_files/HeightGeneration4.png" width ="256">
 <img src="./media/report_files/HeightGeneration5.png" width ="256">
 
+Here you can small island that was generated this way. Red indicating a higher
+height and green a lower height.
+
+<img src="./media/report_files/HeightFalloff.png" width ="256">
+
 #### Nations, Cultures and Religions
+Nations, Cultures and Religions (NCR) are all generated in the same way and is
+very similar to height the only diffence being there are usually multiple NCR's generating 
+at a time where with height each island is generated on its own.
+
+Here is a simplified example example
+
+<img src="./media/report_files/Slide2.png" width ="256">
+<img src="./media/report_files/Slide3.png" width ="256">
+<img src="./media/report_files/Slide4.png" width ="256">
+<img src="./media/report_files/Slide5.png" width ="256">
+
+And here it is in program
+
+<img src="./media/report_files/nationGeneration.png" width ="256">
+
 ### File handling
 #### Reading
+Reading file is very simple every line is either has data that is needed or not.
+If it has data that is need then the data is retrieved and it moves onto the next line
+
+<img src="./media/report_files/FileToRead.png" width ="256">
+
+<img src="./media/report_files/ReadingFiles.png" width ="512">
+
 #### Writing
+Writing Files is another simple process 
+
+<img src="./media/report_files/WritingFile.png" width ="512">
+
+#### Backend Systems
+Out the backend of the program is a statemachine which handles which 
+state the program is in. A state in this context has a Init, HandleInput, Update and Draw
+function Init is called once while the rest are called each frame this basically 
+is each part of a program for example in a simple game you would have a main menu state
+and game state. The state machine was used during development but became redundant 
+towards the end when I combined everthing into one as it would not be necessary to seperate part
+of this program. But it would make expansion easier in the future so I left it in.
+
+#### How it all fits together
+The only state the program has is a MapState class which handles everthing the user
+interacts with and sees. This class has a WorldManager object. The WorldManager class
+contains all the map data (Cells,Nations,Religions and Cultures) their are two function
+that the MapState could call to change the map these are Generate and LoadFromFile. MapState 
+can also edit cell properties using the WorldManager. The last major function of WorldManager 
+is SaveMap which as you can probably guess writes all map data to a file. WorldManager in turn has 
+a WorldGenerator object and Reader object which im sure you can guess what each of them do.
+
+
+
 ### Inspiration
+A lot of inspiration was drawn from https://azgaar.github.io/Fantasy-Map-Generator the creator 
+of this has a write up of their project here https://azgaar.wordpress.com/. This helped
+me with the methods of map generation but all code was written by me apart from 
+the libraries obviously.
 ### Comparison to similar software
+A world generation tool can become a complex program so my project lacks many 
+features that others have. But I did not deem it necessary or probably possible to 
+include in this prototype
+### Conclusion and known problems
+There are some problems with my program such copy and paste do now work which makes loading files bothersome.
+You can not name and NCR this would be a simple thing to add I would just need to add a string to every NCR Struct.
+However I wanted every name to be randomly generated aswell which made it more complicated so I added it to my list 
+of things to do and never got round to it
 ### Youtube video
 ### Sources
 <1> https://en.wikipedia.org/wiki/File:Euclidean_Voronoi_diagram.svg
+
 <2> https://en.wikipedia.org/wiki/File:Fortunes-algorithm-slowed.gif
+
 <3> https://en.wikipedia.org/wiki/File:Delaunay_Voronoi.svg
+
 <4> https://en.wikipedia.org/wiki/File:LloydsMethod1.svg
+
 <5> https://en.wikipedia.org/wiki/File:LloydsMethod2.svg
+
 <6> https://en.wikipedia.org/wiki/File:LloydsMethod3.svg
+
 <7> https://en.wikipedia.org/wiki/File:LloydsMethod15.svg
