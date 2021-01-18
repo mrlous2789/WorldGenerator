@@ -56,7 +56,7 @@ there are no more cells or height hasnt gotten too low. Here is a simplified exa
 Here you can small island that was generated this way. Red indicating a higher
 height and green a lower height.
 
-<img src="./media/report_files/HeightFalloff.png" width ="256"/>
+<img src="./media/report_files/HeightFalloff.PNG" width ="256"/>
 
 #### Nations, Cultures and Religions
 Nations, Cultures and Religions (NCR) are all generated in the same way and is
@@ -65,28 +65,28 @@ at a time where with height each island is generated on its own.
 
 Here is a simplified example example
 
-<img src="./media/report_files/Slide2.png" width ="256"/>
-<img src="./media/report_files/Slide3.png" width ="256"/>
-<img src="./media/report_files/Slide4.png" width ="256"/>
-<img src="./media/report_files/Slide5.png" width ="256"/>
+<img src="./media/report_files/Slide2.PNG" width ="256"/>
+<img src="./media/report_files/Slide3.PNG" width ="256"/>
+<img src="./media/report_files/Slide4.PNG" width ="256"/>
+<img src="./media/report_files/Slide5.PNG" width ="256"/>
 
 And here it is in program
 
-<img src="./media/report_files/nationGeneration.png" width ="256"/>
+<img src="./media/report_files/nationGeneration.PNG" width ="256"/>
 
 ### File handling
 #### Reading
 Reading file is very simple every line is either has data that is needed or not.
 If it has data that is need then the data is retrieved and it moves onto the next line
 
-<img src="./media/report_files/FileToRead.png" width ="256"/>
+<img src="./media/report_files/FileToRead.PNG" width ="256"/>
 
-<img src="./media/report_files/ReadingFiles.png" width ="512"/>
+<img src="./media/report_files/ReadingFiles.PNG" width ="512"/>
 
 #### Writing
 Writing Files is another simple process 
 
-<img src="./media/report_files/WritingFile.png" width ="512"/>
+<img src="./media/report_files/WritingFile.PNG" width ="512"/>
 
 #### Backend Systems
 Out the backend of the program is a statemachine which handles which 
@@ -136,6 +136,7 @@ of things to do and never got round to it.
 Having NCR being able to spread over water can make them look weird however if they cant some islands do not get any NCR
 I settled for not letting them spread over water but this can leave those island looking weird.
 ### Youtube video
+https://youtu.be/kbRQe6pElR8
 ### Sources
 <1> https://en.wikipedia.org/wiki/File:Euclidean_Voronoi_diagram.svg
 
