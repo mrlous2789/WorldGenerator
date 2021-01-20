@@ -31,7 +31,7 @@ namespace Mer
 				{
 					int start = line.find_first_of('[');//find the start of the coordinates
 					std::string coord = "";
-					float x = 0.0f, y = 0.0f, z = 0.0f;//z will always be 0 as the maps are 2d
+					float x = 0.0f, y = 0.0f, z = -1.0f;//z will always be 0 as the maps are 2d
 					bool xcoord = true;//toggles for if the its searching for xcoord or not
 					for (int i = start; i < line.size(); i++)
 					{
@@ -107,9 +107,6 @@ namespace Mer
 			}
 
 
-
-			FindLowestAndHightest(cells);
-
 			file.close();
 			return cells;
 		}
@@ -119,6 +116,76 @@ namespace Mer
 			return cells;
 		}
 
+	}
+
+	std::vector<River> Reader::ReadRiversFile(std::string filename)
+	{
+		std::vector<River> rivers;
+		std::fstream file;
+		file.open(filename);
+		rivers.clear();
+
+		if (file)
+		{
+			std::string line;
+			int id = 0;
+			float increment = 0.0f, width = 0.0f;
+			bool xcoord = true;
+			std::vector<glm::vec3> coords;
+
+			while (std::getline(file,line))
+			{
+				if (line.find("\"geometry\":") != std::string::npos)
+				{
+					int start = line.find_first_of('[');//find the start of the coordinates
+					std::string coord = "";
+					float x = 0.0f, y = 0.0f, z = 0.0f;//z will always be 0 as the maps are 2d
+					bool xcoord = true;//toggles for if the its searching for xcoord or not
+					for (int i = start; i < line.size(); i++)
+					{
+						if (line.at(i) == '[' || line.at(i) == ']')//if a [ or ] do nothing
+						{
+
+						}
+						else if (line.at(i) == ',')// a ',' seperates each coord so when appears save coord string to variable then empty it
+						{
+							if (xcoord)
+							{
+								x = ConvertToFloat(coord);
+								xcoord = false;
+								coord = "";
+							}
+							else//if its the y coord then we already have the x coord so save onto temp coords vector
+							{
+								y = ConvertToFloat(coord);
+								coords.push_back({ x,y,z });
+								xcoord = true;
+								coord = "";
+							}
+						}
+						else//build up coord
+						{
+							coord += line.at(i);
+						}
+					}
+				}
+				else if(line.find("\"id\":") != std::string::npos) { id = ConvertToInt(GetProperty(line)); }
+				else if(line.find("\"width\":") != std::string::npos) { width = ConvertToFloat(GetProperty(line)); }
+				else if (line.find("\"increment\":") != std::string::npos) { increment = ConvertToFloat(GetProperty(line)); }
+				else if (line == "}," || line == "]}")//save to rivers vector
+				{
+					rivers.push_back(River(coords, id, width, increment));//add river to rivers vector
+					coords.clear();
+				}
+			}
+
+			if (highestX > 1 || highestY > 1 || lowestX < -1 || lowestY < -1)//if the cells coords go out of bounds normalise them 
+			{
+				NormaliseRivers(&rivers);
+			}
+		}
+
+		return rivers;
 	}
 
 	std::pair<int, int> Reader::FindFirstAndLast(std::string line)//finding the position of the data in string
@@ -201,6 +268,36 @@ namespace Mer
 		{
 			cells->at(i).NormaliseCoords(xDiff, yDiff, xEdge, yEdge);
 		}
+	}
+	void Reader::NormaliseRivers(std::vector<River>* rivers)
+	{
+		float xDiff = (lowestX + highestX) / 2;//xdiff and ydiff are the furthest
+		float yDiff = (lowestY + highestY) / 2;//out coords after its centered
+
+		float xEdge = highestX + xDiff;//this isnt needed but im not removing it
+		float yEdge = highestY + yDiff;//because everything works as is
+		if (std::abs(lowestX) > std::abs(highestX))//xEdge and yEdge are the values of the furthest out coords they will always be positive
+		{
+			xEdge = lowestX - xDiff;
+		}
+		else
+		{
+			xEdge = highestX - xDiff;
+		}
+		if (std::abs(lowestY) > std::abs(highestY))
+		{
+			yEdge = lowestY - yDiff;
+		}
+		else
+		{
+			yEdge = highestY - yDiff;
+		}
+		for (int i = 0; i < rivers->size(); i++)
+		{
+			rivers->at(i).NormaliseCoords(xDiff, yDiff, xEdge, yEdge);
+		}
+
+		std::cout << "xdiff: " << xDiff << " yDiff: " << yDiff << " xEdge: " << xEdge << " yedge: " << yEdge << std::endl;
 	}
 	void Reader::FindLowestAndHightest(std::vector<Cell> cells)
 	{

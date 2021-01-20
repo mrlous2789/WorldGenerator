@@ -9,12 +9,13 @@ namespace Mer
 	public:
 		WorldManager();
 		bool Generate(int numOfSites, int numOfHighIslands, int numOfLowIslands, int numOfNations, int numOfCultures, int numOfReligions);
-		bool LoadFromFile(std::string cellFile, std::string nationFile, std::string cultureFile, std::string religionFile);
+		bool LoadFromFile(std::string cellFile, std::string riverFile, std::string nationFile, std::string cultureFile, std::string religionFile);
 
 		Cell* getCellAtCoords(double xpos, double ypos);
 
 		//map data
 		std::vector<Cell> cells;
+		std::vector<River> rivers;
 		std::vector<Nation> nations;
 		std::vector<Culture> cultures;
 		std::vector<Religion> religions;
@@ -38,6 +39,7 @@ namespace Mer
 		Reader reader;
 
 		void saveWorld(std::string mapname);
+		void saveRivers(std::string mapname);
 		void saveNations(std::string mapname);
 		void saveCultures(std::string mapname);
 		void saveReligions(std::string mapname);

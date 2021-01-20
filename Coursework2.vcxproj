@@ -171,6 +171,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="Reader.cpp" />
+    <ClCompile Include="River.cpp" />
     <ClCompile Include="StateMachine.cpp" />
     <ClCompile Include="WorldGenerator.cpp" />
     <ClCompile Include="WorldManager.cpp" />
@@ -200,6 +201,7 @@
     <ClInclude Include="Reader.h" />
     <ClInclude Include="Religion.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="River.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="StateMachine.h" />
     <ClInclude Include="stb_image.h" />

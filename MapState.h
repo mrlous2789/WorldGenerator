@@ -23,13 +23,15 @@ namespace Mer
 		WorldManager wm;
 
 		enum VAO_IDs { Cells, Borders, Colours, Tex, NumVAOs = 2 };
-		enum Buffer_IDs { ArrayBuffer, NumBuffers = 12000 };
+		enum Buffer_IDs { ArrayBuffer, NumBuffers = 12000, NumRivers = 200 };
 		enum Attrib_IDs { vPosition = 0, cPosition = 1, tPosition = 2 };
 
 		GLuint VAOs[NumVAOs];
 		GLuint Buffers[NumBuffers];		
+		GLuint riverBuffers[NumRivers];
 
 		GLuint cellsShader;
+		GLuint riverShader;
 
 		std::vector<double> coords;
 
@@ -46,6 +48,8 @@ namespace Mer
 		
 		float height = 0;
 
+
+		bool showRivers = false;
 		bool showCellBorders = true;
 		bool generateNew = false;
 		bool savemap = false;
@@ -115,6 +119,7 @@ namespace Mer
 
 		char filename[128] = "testFile.geojson";
 		char cellFile[128] = ".\\OutputFiles\\mapname.geojson";
+		char riversFile[128] = ".\\OutputFiles\\mapname_rivers.geojson";
 		char nationsFile[128] = ".\\OutputFiles\\mapname_nations.mer";
 		char cultureFile[128] = ".\\OutputFiles\\mapname_cultures.mer";
 		char religionsFile[128] = ".\\OutputFiles\\mapname_religions.mer";

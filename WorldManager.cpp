@@ -14,12 +14,14 @@ namespace Mer
 		religions = wg.GenerateReligions(numOfCultures, &cells);
 		return true;
 	}
-	bool WorldManager::LoadFromFile(std::string cellFile, std::string nationFile, std::string cultureFile, std::string religionFile)
+	bool WorldManager::LoadFromFile(std::string cellFile, std::string riverFile,std::string nationFile, std::string cultureFile, std::string religionFile)
 	{
 		cells = reader.ReadCellFile(cellFile);
+		rivers = reader.ReadRiversFile(riverFile);
 		nations = reader.ReadNationFile(nationFile);
 		cultures = reader.ReadCutlureFile(cultureFile);
 		religions = reader.ReadReligionFile(religionFile);
+
 		if (cells.empty())
 			return false;
 		else
@@ -118,6 +120,7 @@ namespace Mer
 	void WorldManager::SaveMap(std::string mapname)
 	{
 		saveWorld(mapname);
+		saveRivers(mapname);
 		saveNations(mapname);
 		saveCultures(mapname);
 		saveReligions(mapname);
@@ -187,6 +190,51 @@ namespace Mer
 		file << "]}";
 
 		file.close();
+	}
+	void WorldManager::saveRivers(std::string mapname)
+	{
+		std::ofstream file;
+		std::string filename = ".\\OutputFiles\\" + mapname + "_rivers.geojson";
+
+		file.open(filename);
+		file.clear();
+
+		file << "{ \"type\": \"FeatureCollection\", \"features\": [\n";
+
+		for (int i = 0; i < rivers.size(); i++)
+		{
+			file << "{\n";
+			file << "    " << "\"type\": \"Feature\",\n";
+
+			file << "    " << "\"geometry\": { \"type\": \"LineString\", \"coordinates\": [[";
+
+			for (int j = 0; j < rivers[i].coords.size(); j++)
+			{
+				file << "[";
+				file << rivers[i].coords[j].x; file << ","; file << rivers[i].coords[j].y;
+				if (j == (rivers[i].coords.size() - 1))
+				{
+					file << "]";
+				}
+				else
+				{
+					file << "],";
+				}
+
+			}
+			file << "]] },\n";
+
+			file << "    " << "\"properties\": {\n";
+			file << "        " << "\"id\": " << "\"" << rivers[i].id << "\",\n";
+			file << "        " << "\"width\": " << "\"" << rivers[i].width << "\",\n";
+			file << "        " << "\"increment\": " << "\"" << rivers[i].increment << "\",\n";
+			file << "    }\n";
+			if (i == rivers.size() - 1)
+				file << "}\n";
+			else
+				file << "},\n";
+
+		}
 	}
 	//everthing else has a custom text format to make reading them easy
 	void WorldManager::saveNations(std::string mapname)

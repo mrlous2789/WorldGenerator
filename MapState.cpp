@@ -45,9 +45,10 @@ namespace Mer
 
 		glGenVertexArrays(NumVAOs, VAOs);
 		glGenBuffers(NumBuffers, Buffers);
+		glGenBuffers(NumRivers, riverBuffers);
 		//glGenBuffers(NumBuffers, borderBuffers);
 
-		glPointSize(1.0f);
+		glLineWidth(1.0f);
 		
 		
 		for (int i = 0; i < wm.cells.size(); i++)
@@ -57,6 +58,13 @@ namespace Mer
 			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 		}
 		
+		for (int i = 0; i < wm.rivers.size(); i++)
+		{
+			glBindBuffer(GL_ARRAY_BUFFER, riverBuffers[i]);
+			glBufferData(GL_ARRAY_BUFFER, wm.rivers[i].coords.size() * sizeof(glm::vec3), &wm.rivers[i].coords.front(), GL_STATIC_DRAW);
+			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+		}
+
 		ShaderInfo  shaders[] =
 		{
 			{ GL_VERTEX_SHADER, "media/cells.vert" },
@@ -70,10 +78,12 @@ namespace Mer
 			{ GL_NONE, NULL }
 		};
 		cellsShader = LoadShaders(shaders);
+		riverShader = LoadShaders(borderShaders);
 
 		selectedCell = &wm.cells[0];
 
 		glUseProgram(cellsShader);
+		
 
 		// creating the model matrix
 		model = glm::mat4(1.0f);
@@ -256,12 +266,18 @@ namespace Mer
 
 		if (loadNewMap)//load new map and buffer data
 		{
-			if (wm.LoadFromFile(cellFile, nationsFile, cultureFile, religionsFile))
+			if (wm.LoadFromFile(cellFile, riversFile, nationsFile, cultureFile, religionsFile))
 			{
 				for (int i = 0; i < wm.cells.size(); i++)
 				{
 					glBindBuffer(GL_ARRAY_BUFFER, Buffers[i]);
 					glBufferData(GL_ARRAY_BUFFER, wm.cells[i].coords.size() * sizeof(glm::vec3), &wm.cells[i].coords.front(), GL_STATIC_DRAW);
+					glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+				}
+				for (int i = 0; i < wm.rivers.size(); i++)
+				{
+					glBindBuffer(GL_ARRAY_BUFFER, riverBuffers[i]);
+					glBufferData(GL_ARRAY_BUFFER, wm.rivers[i].coords.size() * sizeof(glm::vec3), &wm.rivers[i].coords.front(), GL_STATIC_DRAW);
 					glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 				}
 				std::cout << "loaded file" << std::endl;
@@ -296,7 +312,7 @@ namespace Mer
 		{
 			if (selectedCulture != -1)
 			{
-				wm.deleteReligion(selectedCulture);
+				wm.deleteCulture(selectedCulture);
 				if (selectedCulture >= wm.cultures.size())
 				{
 					selectedCulture--;
@@ -374,6 +390,7 @@ namespace Mer
 
 		glEnableVertexAttribArray(0);
 
+		glUseProgram(cellsShader);
 
 		for (int i = 0; i < wm.cells.size(); i++)
 		{
@@ -522,9 +539,34 @@ namespace Mer
 
 
 		}
-		glDisableVertexAttribArray(0);
-		glUseProgram(cellsShader);
 
+
+
+		color[0] = 0.0f;
+		color[1] = 0.0f;
+		color[2] = 1.0f;
+		
+
+		if (showRivers)
+		{
+
+			for (int i = 0; i < wm.rivers.size(); i++)
+			{
+				GLint myLoc = glGetUniformLocation(cellsShader, "color");
+				glProgramUniform3fv(cellsShader, myLoc, 1, color);
+
+				int mvpLoc = glGetUniformLocation(cellsShader, "mvp");
+				glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, glm::value_ptr(mvp));
+
+				glBindBuffer(GL_ARRAY_BUFFER, riverBuffers[i]);
+				glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+				glDrawArrays(GL_LINE_STRIP, 0, wm.rivers[i].coords.size());
+			}
+
+		}
+		glDisableVertexAttribArray(0);
+		
 
 		//ui code its messy i dont think ui code can never not be messy
 		ImGui_ImplOpenGL3_NewFrame();
@@ -547,9 +589,13 @@ namespace Mer
 		{
 			mapmode = 3;
 		}
-		if (ImGui::Button("Show Borders") && !generateNew)
+		if (ImGui::Button("Show Borders"))
 		{
 			showCellBorders = !showCellBorders;
+		}
+		if (ImGui::Button("Show Rivers"))
+		{
+			showRivers = !showRivers;
 		}
 		ImGui::End();//end of map modes imgui window
 		ImGui::Begin("Main menu");//main menu imgui window
@@ -686,6 +732,7 @@ namespace Mer
 		{
 			ImGui::Begin("Load file");
 			ImGui::InputText("Cell file: ", cellFile, ARRAYSIZE(cellFile));
+			ImGui::InputText("River file: ", riversFile, ARRAYSIZE(nationsFile));
 			ImGui::InputText("Nations file: ", nationsFile, ARRAYSIZE(nationsFile));
 			ImGui::InputText("Culture file: ", cultureFile, ARRAYSIZE(cultureFile));
 			ImGui::InputText("Religion file: ", religionsFile, ARRAYSIZE(religionsFile));
